@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use these skills, please cite them as below."
+title: "fabianoflorentino/golang-agent-skills: AI Agent Skills for production-ready Go projects"
+abstract: >-
+  A collection of AI agent skills that extend coding assistants with Go-specific
+  expertise: language idioms, naming, error handling, testing, security,
+  performance, concurrency, observability, project layout, and the pitfalls from
+  100 Go Mistakes and How to Avoid Them.
+type: software
+authors:
+  - family-names: Florentino
+    given-names: Fabiano Santos
+    email: fabianoratm@gmail.com
+date-released: 2026-09-13
+license: MIT
+repository-code: "https://github.com/fabianoflorentino/golang-agent-skills"
+url: "https://github.com/fabianoflorentino/golang-agent-skills"
+keywords:
+  - golang
+  - go
+  - ai-agent
+  - agent-skills
+  - claude-code
+  - llm
+  - developer-productivity
+  - 100-go-mistakes

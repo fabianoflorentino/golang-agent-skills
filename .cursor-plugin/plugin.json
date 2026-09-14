@@ -1,0 +1,27 @@
+{
+    "name": "golang-agent-skills",
+    "displayName": "Skills for Golang",
+    "description": "AI Agent Skills for production-ready Go projects",
+    "version": "1.0.0",
+    "author": {
+        "name": "Fabiano Santos Florentino",
+        "email": "fabianoratm@gmail.com"
+    },
+    "homepage": "https://github.com/fabianoflorentino/golang-agent-skills",
+    "repository": "https://github.com/fabianoflorentino/golang-agent-skills",
+    "license": "MIT",
+    "keywords": [
+        "plugin",
+        "go",
+        "golang",
+        "ai-agent",
+        "skills",
+        "agentic",
+        "engineering",
+        "developer",
+        "coding",
+        "productivity"
+    ],
+    "skills": "./skills/",
+    "rules": "./rules/"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "golang-agent-skills",
+  "version": "1.0.0",
+  "description": "AI Agent Skills for production-ready Go projects, including the pitfalls from 100 Go Mistakes and How to Avoid Them"
+}
