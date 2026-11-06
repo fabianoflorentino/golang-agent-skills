@@ -76,7 +76,7 @@
   /* Hero */
   .hero { position: relative; overflow: hidden; }
   .hero::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(56, 189, 248, .055) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, .055) 1px, transparent 1px); background-size: 64px 64px; -webkit-mask-image: radial-gradient(ellipse 72% 70% at 50% 42%, #000 20%, transparent 76%); mask-image: radial-gradient(ellipse 72% 70% at 50% 42%, #000 20%, transparent 76%); }
-  .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); gap: clamp(2rem, 5vw, 4.25rem); align-items: center; padding: clamp(2.75rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2rem) clamp(3rem, 6vw, 4.5rem); }
+  .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); gap: clamp(2rem, 5vw, 4.25rem); align-items: center; padding: clamp(2rem, 5vw, 3.75rem) clamp(1.25rem, 4vw, 2rem) clamp(2.25rem, 5vw, 3.5rem); }
   .hero-copy > * { animation: fade-in-up .75s cubic-bezier(.2, .7, .2, 1) both; }
   .hero-copy > *:nth-child(1) { animation-delay: .04s; }
   .hero-copy > *:nth-child(2) { animation-delay: .1s; }
@@ -99,7 +99,7 @@
   .hero-hint code { padding: .1em .35em; border-radius: 5px; background: var(--primary-dim); color: var(--primary); font-size: .9em; }
 
   /* Route map */
-  .route-map { position: relative; width: 100%; max-width: 520px; aspect-ratio: 1 / 1; justify-self: end; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }
+  .route-map { position: relative; width: 100%; max-width: 480px; aspect-ratio: 1 / 1; justify-self: end; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }
   .route-map::before { content: ""; position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle, rgba(56, 189, 248, .1), transparent 62%); filter: blur(14px); }
   .route-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
   .route-lines path { fill: none; stroke: url(#route-grad); stroke-width: .5; stroke-dasharray: 2.4 2.4; stroke-linecap: round; opacity: .55; animation: route-dash 22s linear infinite; }
@@ -119,33 +119,35 @@
   .guide-head { max-width: 72ch; margin-bottom: 2rem; }
   .guide-head h2, .quickstart-copy h2 { margin: 0 0 .45rem; font-size: clamp(1.7rem, 3vw, 2.25rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }
   .guide-head p, .quickstart-copy p { margin: 0; color: var(--muted); font-size: .95rem; }
-  .guide-shell { display: grid; grid-template-columns: minmax(210px, 250px) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
-  .rail { position: sticky; top: calc(var(--nav-h) + 1.5rem); align-self: start; display: flex; flex-direction: column; gap: 1.4rem; }
-  .rail-label { display: block; margin: 0 0 .55rem; color: var(--muted-2); font-family: var(--mono); font-size: .6rem; letter-spacing: .16em; text-transform: uppercase; }
-  input[type=search] { width: 100%; padding: .72rem .85rem; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--text); font: .82rem var(--sans); outline: none; transition: border-color .2s ease, box-shadow .2s ease; }
+  .filter-card { position: sticky; top: calc(var(--nav-h) + .85rem); z-index: 8; display: grid; grid-template-columns: minmax(190px, 240px) minmax(0, 1fr) auto; gap: .9rem 1.25rem; align-items: end; margin-bottom: 2rem; padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius-lg); background: rgba(13, 18, 32, .92); box-shadow: 0 18px 44px rgba(0, 0, 0, .35); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .filter-label { display: block; margin: 0 0 .5rem; color: var(--muted-2); font-family: var(--mono); font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; }
+  input[type=search] { width: 100%; padding: .68rem .85rem; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--text); font: .82rem var(--sans); outline: none; transition: border-color .2s ease, box-shadow .2s ease; }
   input[type=search]::placeholder { color: var(--muted-2); }
   input[type=search]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 229, 168, .12); }
-  .rail-list { display: flex; flex-direction: column; gap: .15rem; }
-  .rail-link { display: flex; align-items: center; justify-content: space-between; gap: .6rem; width: 100%; padding: .45rem .6rem; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--muted); font-size: .79rem; text-align: left; transition: background .2s ease, border-color .2s ease, color .2s ease; }
-  .rail-link:hover { background: var(--surface-2); color: var(--text); }
-  .rail-link.active { border-color: rgba(0, 229, 168, .35); background: var(--primary-dim); color: var(--primary); }
-  .rail-count { flex-shrink: 0; color: var(--muted-2); font-family: var(--mono); font-size: .6rem; }
-  .rail-link.active .rail-count { color: var(--primary); }
-  .rail-note { margin: 0; color: var(--muted-2); font-family: var(--mono); font-size: .64rem; }
-  .rail-note strong { color: var(--text); font-weight: 500; }
+  .route-chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+  .route-chip { display: inline-flex; align-items: center; gap: .4rem; padding: .36rem .62rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-2); color: var(--muted); font-size: .72rem; white-space: nowrap; transition: border-color .2s ease, background .2s ease, color .2s ease; }
+  .route-chip:hover { border-color: var(--border-2); color: var(--text); }
+  .route-chip.active { border-color: rgba(0, 229, 168, .45); background: var(--primary-dim); color: var(--primary); }
+  .rail-count { color: var(--muted-2); font-family: var(--mono); font-size: .55rem; }
+  .route-chip.active .rail-count { color: var(--primary); }
+  .filter-note { margin: 0; color: var(--muted-2); font-family: var(--mono); font-size: .62rem; white-space: nowrap; }
+  .filter-note strong { color: var(--text); font-weight: 500; }
   .guide-body { min-width: 0; }
-  .category { margin: 0 0 2.5rem; scroll-margin-top: 6.5rem; }
+  .category { margin: 0 0 2.5rem; scroll-margin-top: 11rem; }
+  .category.fade-in { animation: fade-in-up .3s ease both; }
   .category:last-child { margin-bottom: 0; }
   .category-head { display: flex; align-items: baseline; gap: .7rem; padding-bottom: .55rem; border-bottom: 1px solid var(--border); }
   .cat-index { color: var(--primary); font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; }
   .category-head h2 { margin: 0; font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em; }
   .category-head .count { margin-left: auto; color: var(--muted-2); font-family: var(--mono); font-size: .6rem; }
   .entries { display: flex; flex-direction: column; }
-  .entry { border-bottom: 1px solid var(--border); }
+  .entry { border-bottom: 1px solid var(--border); border-radius: 12px; transition: background .2s ease, border-color .25s ease, box-shadow .25s ease, margin .25s ease; }
   .entry:last-child { border-bottom: 0; }
-  .entry-row { display: grid; grid-template-columns: 30px 36px minmax(0, 1fr) 22px; gap: .75rem; align-items: start; padding: .95rem .35rem; cursor: pointer; list-style: none; border-radius: 8px; transition: background .2s ease; }
+  .entry[open] { margin: .45rem 0; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(17, 24, 39, .82), rgba(13, 18, 32, .94)); box-shadow: 0 18px 46px rgba(0, 0, 0, .32), 0 0 0 1px rgba(0, 229, 168, .05); }
+  .entry-row { display: grid; grid-template-columns: 30px 36px minmax(0, 1fr) 22px; gap: .75rem; align-items: start; padding: .95rem .55rem; cursor: pointer; list-style: none; border-radius: 12px; transition: background .2s ease; }
   .entry-row::-webkit-details-marker { display: none; }
   .entry-row:hover { background: rgba(56, 189, 248, .045); }
+  .entry[open] > .entry-row { border-bottom: 1px solid var(--border); border-radius: 12px 12px 0 0; }
   .entry-no { padding-top: .42rem; color: var(--muted-2); font-family: var(--mono); font-size: .58rem; }
   .emoji { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-3); font-size: 16px; }
   .entry-copy { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
@@ -154,11 +156,11 @@
   .skill-meta { color: var(--muted-2); font-family: var(--mono); font-size: .58rem; }
   .badge { padding: .15rem .4rem; border: 1px solid rgba(167, 139, 250, .32); border-radius: 5px; background: rgba(167, 139, 250, .12); color: var(--accent); font-family: var(--mono); font-size: .55rem; }
   .desc { display: -webkit-box; overflow: hidden; margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-  .chev { padding-top: .18rem; color: var(--muted-2); font-family: var(--mono); font-size: 1rem; line-height: 1; transition: transform .2s ease, color .2s ease; }
+  .chev { padding-top: .18rem; color: var(--muted-2); font-family: var(--mono); font-size: 1rem; line-height: 1; transition: transform .25s ease, color .2s ease; }
   .entry-row:hover .chev { color: var(--secondary); }
-  details[open] > .entry-row .chev { color: var(--primary); transform: rotate(45deg); }
-  details[open] .desc { display: block; overflow: visible; -webkit-line-clamp: unset; }
-  .entry-body { padding: .1rem .35rem 1.3rem 4.1rem; }
+  .entry[open] > .entry-row .chev { color: var(--primary); transform: rotate(45deg); }
+  .entry[open] .desc { display: block; overflow: visible; -webkit-line-clamp: unset; }
+  .entry-body { height: auto; overflow: hidden; padding: 0 .55rem 1.1rem 4.25rem; transition: height .28s cubic-bezier(.2, .7, .2, 1); }
   .compat { color: var(--muted); font-size: .73rem; }
   pre.body { margin-top: .8rem; padding: 1rem; max-height: 420px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); background: #070b13; color: var(--text-2); font-size: .72rem; line-height: 1.65; white-space: pre-wrap; }
   .src { margin: .8rem 0 0; }
@@ -206,22 +208,18 @@
 
   @media (max-width: 980px) {
     .hero-inner { grid-template-columns: 1fr; }
-    .route-map { justify-self: center; max-width: 470px; margin-top: .5rem; }
-    .guide-shell { grid-template-columns: 1fr; gap: 1.5rem; }
-    .rail { position: static; flex-direction: row; flex-wrap: wrap; align-items: flex-end; gap: 1.25rem; }
-    .rail-block { flex: 1 1 220px; }
-    .rail-block:last-of-type { flex-basis: 100%; }
-    .rail-list { flex-direction: row; flex-wrap: wrap; }
-    .rail-link { width: auto; }
-    .rail-link .rail-count { margin-left: .35rem; }
+    .route-map { justify-self: center; max-width: 460px; margin-top: .5rem; }
+    .filter-card { position: static; grid-template-columns: 1fr 1fr; }
+    .filter-note { grid-column: 1 / -1; }
     .nav-links { display: none; }
     .quickstart-band { grid-template-columns: 1fr; }
   }
   @media (max-width: 640px) {
     .nav-cta { display: none; }
     .nav-logo { font-size: .85rem; }
-    .entry-row { grid-template-columns: 24px 32px minmax(0, 1fr) 18px; gap: .55rem; }
-    .entry-body { padding-left: .35rem; }
+    .filter-card { grid-template-columns: 1fr; }
+    .entry-row { grid-template-columns: 24px 32px minmax(0, 1fr) 18px; gap: .55rem; padding: .9rem .3rem; }
+    .entry-body { padding-left: .55rem; }
     .hero-facts li { padding-right: .8rem; margin-right: .8rem; }
     .footer-inner { flex-direction: column; align-items: flex-start; }
   }
@@ -313,19 +311,18 @@
       <h2>Every skill, one shelf.</h2>
       <p>A dense, searchable index of the whole pack. Filter by route, then open any entry to read the full skill.</p>
     </div>
-    <div class="guide-shell">
-      <aside class="rail" aria-label="Catalog filters">
-        <div class="rail-block">
-          <label class="rail-label" for="search">Search</label>
-          <input type="search" id="search" placeholder="name or description..." autocomplete="off">
-        </div>
-        <div class="rail-block">
-          <p class="rail-label">Routes</p>
-          <div class="rail-list" id="chips"><button class="rail-link active" data-filter="All"><span>All</span><span class="rail-count">58</span></button><button class="rail-link" data-filter="Getting Started"><span>Getting Started</span><span class="rail-count">1</span></button><button class="rail-link" data-filter="Code Quality"><span>Code Quality</span><span class="rail-count">8</span></button><button class="rail-link" data-filter="Architecture &amp; Design"><span>Architecture &amp; Design</span><span class="rail-count">8</span></button><button class="rail-link" data-filter="QA &amp; Performance"><span>QA &amp; Performance</span><span class="rail-count">5</span></button><button class="rail-link" data-filter="Project Setup"><span>Project Setup</span><span class="rail-count">8</span></button><button class="rail-link" data-filter="APIs"><span>APIs</span><span class="rail-count">4</span></button><button class="rail-link" data-filter="Dependency Injection"><span>Dependency Injection</span><span class="rail-count">3</span></button><button class="rail-link" data-filter="Frameworks"><span>Frameworks</span><span class="rail-count">2</span></button><button class="rail-link" data-filter="samber/*"><span>samber/*</span><span class="rail-count">7</span></button><button class="rail-link" data-filter="Testing"><span>Testing</span><span class="rail-count">1</span></button><button class="rail-link" data-filter="Pitfalls (100 Go Mistakes)"><span>Pitfalls (100 Go Mistakes)</span><span class="rail-count">11</span></button></div>
-        </div>
-        <p class="rail-note"><strong id="result-count">58</strong> skills in view</p>
-      </aside>
-      <div class="guide-body" id="catalog-body"><section class="category" id="cat-getting-started" data-category="Getting Started"><header class="category-head"><span class="cat-index">01</span><h2>Getting Started</h2><span class="count">1 skill</span></header><div class="entries"><details class="entry" data-category="Getting Started" data-name="golang-how-to" data-search="golang skills orchestrator — always active on any golang coding, review, debug, or setup task. reads the task context and loads the most relevant skills from fabianoflorentino/golang-agent-skills, often multiple at once: writing a grpc service loads golang-grpc + golang-testing + golang-error-handling; debugging a panic loads golang-troubleshooting + golang-safety; auditing security loads golang-security + golang-lint + golang-safety. also: disambiguates competing clusters when two skills seem to overlap (performance vs benchmark vs troubleshooting, samber/lo vs mo vs ro, di cluster, safety vs security), and configures the project&#x27;s agent-config file (claude.md, agents.md, gemini.md, cursor rules, or copilot instructions) to force-trigger skills in a project (/golang-how-to configure)." >
+    <div class="filter-card" id="filters">
+      <div class="filter-search">
+        <label class="filter-label" for="search">Search</label>
+        <input type="search" id="search" placeholder="name or description..." autocomplete="off">
+      </div>
+      <div class="filter-routes">
+        <p class="filter-label">Routes</p>
+        <div class="route-chips" id="chips"><button class="route-chip active" data-filter="All"><span>All</span><span class="rail-count">58</span></button><button class="route-chip" data-filter="Getting Started"><span>Getting Started</span><span class="rail-count">1</span></button><button class="route-chip" data-filter="Code Quality"><span>Code Quality</span><span class="rail-count">8</span></button><button class="route-chip" data-filter="Architecture &amp; Design"><span>Architecture &amp; Design</span><span class="rail-count">8</span></button><button class="route-chip" data-filter="QA &amp; Performance"><span>QA &amp; Performance</span><span class="rail-count">5</span></button><button class="route-chip" data-filter="Project Setup"><span>Project Setup</span><span class="rail-count">8</span></button><button class="route-chip" data-filter="APIs"><span>APIs</span><span class="rail-count">4</span></button><button class="route-chip" data-filter="Dependency Injection"><span>Dependency Injection</span><span class="rail-count">3</span></button><button class="route-chip" data-filter="Frameworks"><span>Frameworks</span><span class="rail-count">2</span></button><button class="route-chip" data-filter="samber/*"><span>samber/*</span><span class="rail-count">7</span></button><button class="route-chip" data-filter="Testing"><span>Testing</span><span class="rail-count">1</span></button><button class="route-chip" data-filter="Pitfalls (100 Go Mistakes)"><span>Pitfalls (100 Go Mistakes)</span><span class="rail-count">11</span></button></div>
+      </div>
+      <p class="filter-note"><strong id="result-count">58</strong> <span id="result-label">skills</span> in view</p>
+    </div>
+    <div class="guide-body" id="catalog-body"><section class="category" id="cat-getting-started" data-category="Getting Started"><header class="category-head"><span class="cat-index">01</span><h2>Getting Started</h2><span class="count">1 skill</span></header><div class="entries"><details class="entry" data-category="Getting Started" data-name="golang-how-to" data-search="golang skills orchestrator — always active on any golang coding, review, debug, or setup task. reads the task context and loads the most relevant skills from fabianoflorentino/golang-agent-skills, often multiple at once: writing a grpc service loads golang-grpc + golang-testing + golang-error-handling; debugging a panic loads golang-troubleshooting + golang-safety; auditing security loads golang-security + golang-lint + golang-safety. also: disambiguates competing clusters when two skills seem to overlap (performance vs benchmark vs troubleshooting, samber/lo vs mo vs ro, di cluster, safety vs security), and configures the project&#x27;s agent-config file (claude.md, agents.md, gemini.md, cursor rules, or copilot instructions) to force-trigger skills in a project (/golang-how-to configure).">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">🧭</span>
@@ -469,7 +466,7 @@ This skill is not exhaustive — individual skill files and the official Go docu
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-how-to/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section>
-<section class="category" id="cat-code-quality" data-category="Code Quality"><header class="category-head"><span class="cat-index">02</span><h2>Code Quality</h2><span class="count">8 skills</span></header><div class="entries"><details class="entry" data-category="Code Quality" data-name="golang-code-style" data-search="golang code style conventions — line length and breaking, variable declarations, control flow clarity, when comments help vs hurt. use when writing or reviewing go code, asking about style or clarity, or establishing project coding standards. not for naming conventions (→ see `fabianoflorentino/golang-agent-skills@golang-naming` skill), linter configuration (→ see `fabianoflorentino/golang-agent-skills@golang-lint` skill), or doc comments (→ see `fabianoflorentino/golang-agent-skills@golang-documentation` skill)." >
+<section class="category" id="cat-code-quality" data-category="Code Quality"><header class="category-head"><span class="cat-index">02</span><h2>Code Quality</h2><span class="count">8 skills</span></header><div class="entries"><details class="entry" data-category="Code Quality" data-name="golang-code-style" data-search="golang code style conventions — line length and breaking, variable declarations, control flow clarity, when comments help vs hurt. use when writing or reviewing go code, asking about style or clarity, or establishing project coding standards. not for naming conventions (→ see `fabianoflorentino/golang-agent-skills@golang-naming` skill), linter configuration (→ see `fabianoflorentino/golang-agent-skills@golang-lint` skill), or doc comments (→ see `fabianoflorentino/golang-agent-skills@golang-documentation` skill).">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">🎨</span>
@@ -614,7 +611,7 @@ For a large tree, fan out one sub-agent per independent concern — control flow
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-code-style/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Code Quality" data-name="golang-documentation" data-search="golang documentation — doc comments, godoc/godoc rendering, package docs via doc.go, code review in documentation, examples as living documentation, license headers, diátaxis guide structure (how-to / reference / explanation), and ascii doc conventions. apply when writing or reviewing go package documentation, creating package-level reads, or structuring skill and project docs. for lint enforcement of comment rules see `fabianoflorentino/golang-agent-skills@golang-lint`; for benchmark/doc templates see `fabianoflorentino/golang-agent-skills@golang-benchmark`." >
+<details class="entry" data-category="Code Quality" data-name="golang-documentation" data-search="golang documentation — doc comments, godoc/godoc rendering, package docs via doc.go, code review in documentation, examples as living documentation, license headers, diátaxis guide structure (how-to / reference / explanation), and ascii doc conventions. apply when writing or reviewing go package documentation, creating package-level reads, or structuring skill and project docs. for lint enforcement of comment rules see `fabianoflorentino/golang-agent-skills@golang-lint`; for benchmark/doc templates see `fabianoflorentino/golang-agent-skills@golang-benchmark`.">
   <summary class="entry-row">
     <span class="entry-no">02</span>
     <span class="emoji">📝</span>
@@ -750,7 +747,7 @@ sed -i &#x27;s|// Deprecated: .*||&#x27; .  # always via the proper marker, neve
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-documentation/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Code Quality" data-name="golang-error-handling" data-search="idiomatic golang error handling — creation, wrapping with %w, errors.is/as, errors.join, custom error types, sentinel errors, panic/recover, the single handling rule, structured logging with slog, http request logging middleware, and samber/oops for production errors. built to make logs usable at scale with log aggregation 3rd-party tools. apply when creating, wrapping, inspecting, or logging errors in go code. for samber/oops specifics → see `fabianoflorentino/golang-agent-skills@golang-samber-oops` skill; for slog handler ecosystem → see `fabianoflorentino/golang-agent-skills@golang-samber-slog` skill." >
+<details class="entry" data-category="Code Quality" data-name="golang-error-handling" data-search="idiomatic golang error handling — creation, wrapping with %w, errors.is/as, errors.join, custom error types, sentinel errors, panic/recover, the single handling rule, structured logging with slog, http request logging middleware, and samber/oops for production errors. built to make logs usable at scale with log aggregation 3rd-party tools. apply when creating, wrapping, inspecting, or logging errors in go code. for samber/oops specifics → see `fabianoflorentino/golang-agent-skills@golang-samber-oops` skill; for slog handler ecosystem → see `fabianoflorentino/golang-agent-skills@golang-samber-slog` skill.">
   <summary class="entry-row">
     <span class="entry-no">03</span>
     <span class="emoji">⚠️</span>
@@ -860,7 +857,7 @@ Never send raw technical errors to a user. Translate at the HTTP boundary: inter
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-error-handling/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Code Quality" data-name="golang-lint" data-search="linting best practices and golangci-lint configuration for golang projects — running linters, configuring .golangci.yml, suppressing warnings with nolint directives, interpreting lint output, and selecting linters. use when configuring golangci-lint, asking about lint warnings or nolint suppressions, setting up code quality tooling, or choosing linters. also use when the user mentions golangci-lint, go vet, staticcheck, or revive. not for wiring a lint step into a github actions pipeline (→ see `fabianoflorentino/golang-agent-skills@golang-continuous-integration` skill)." >
+<details class="entry" data-category="Code Quality" data-name="golang-lint" data-search="linting best practices and golangci-lint configuration for golang projects — running linters, configuring .golangci.yml, suppressing warnings with nolint directives, interpreting lint output, and selecting linters. use when configuring golangci-lint, asking about lint warnings or nolint suppressions, setting up code quality tooling, or choosing linters. also use when the user mentions golangci-lint, go vet, staticcheck, or revive. not for wiring a lint step into a github actions pipeline (→ see `fabianoflorentino/golang-agent-skills@golang-continuous-integration` skill).">
   <summary class="entry-row">
     <span class="entry-no">04</span>
     <span class="emoji">🧹</span>
@@ -973,7 +970,7 @@ Adopting linting on a legacy tree? Fan out one sub-agent per category so the cat
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-lint/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Code Quality" data-name="golang-naming" data-search="go (golang) naming conventions — covers packages, constructors, structs, interfaces, constants, enums, errors, booleans, receivers, getters/setters, functional options, acronyms, test functions, and subtest names. use this skill when writing new go code, reviewing or refactoring, choosing between naming alternatives (new vs newtypename, isconnected vs connected, errnotfound vs notfounderror, statusready vs statusunknown at iota 0), debating go package names (utils/helpers anti-patterns), or asking about go naming best practices. also trigger when the user mentions mixedcaps vs snake_case, all_caps constants, get-prefix on getters, or error string casing. do not use for general go implementation questions that don&#x27;t involve naming decisions." >
+<details class="entry" data-category="Code Quality" data-name="golang-naming" data-search="go (golang) naming conventions — covers packages, constructors, structs, interfaces, constants, enums, errors, booleans, receivers, getters/setters, functional options, acronyms, test functions, and subtest names. use this skill when writing new go code, reviewing or refactoring, choosing between naming alternatives (new vs newtypename, isconnected vs connected, errnotfound vs notfounderror, statusready vs statusunknown at iota 0), debating go package names (utils/helpers anti-patterns), or asking about go naming best practices. also trigger when the user mentions mixedcaps vs snake_case, all_caps constants, get-prefix on getters, or error string casing. do not use for general go implementation questions that don&#x27;t involve naming decisions.">
   <summary class="entry-row">
     <span class="entry-no">05</span>
     <span class="emoji">🏷</span>
@@ -1112,7 +1109,7 @@ Renames reach every call site and can break interface satisfaction invisibly. Do
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-naming/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Code Quality" data-name="golang-safety" data-search="defensive golang coding against accidental bugs — nil panics, typed-nil interfaces, `append` backing-array aliasing, silent int64-to-int32 truncation, float `==` comparison, `defer` inside loops, defensive copies of slices and maps, and usable zero values. use when a go program panics on a nil map write or nil pointer dereference, when reviewing code for nil-safety, numeric conversion overflow, or resource lifecycle, or when designing a type whose zero value must be safe. not for designing concurrent access with goroutines, channels, or sync primitives (→ see `fabianoflorentino/golang-agent-skills@golang-concurrency` skill), not for exploitable vulnerabilities such as injection, weak crypto, or leaked secrets (→ see `fabianoflorentino/golang-agent-skills@golang-security` skill), and not for debugging an already-failing program (→ see `fabianoflorentino/golang-agent-skills@golang-troubleshooting` skill)." >
+<details class="entry" data-category="Code Quality" data-name="golang-safety" data-search="defensive golang coding against accidental bugs — nil panics, typed-nil interfaces, `append` backing-array aliasing, silent int64-to-int32 truncation, float `==` comparison, `defer` inside loops, defensive copies of slices and maps, and usable zero values. use when a go program panics on a nil map write or nil pointer dereference, when reviewing code for nil-safety, numeric conversion overflow, or resource lifecycle, or when designing a type whose zero value must be safe. not for designing concurrent access with goroutines, channels, or sync primitives (→ see `fabianoflorentino/golang-agent-skills@golang-concurrency` skill), not for exploitable vulnerabilities such as injection, weak crypto, or leaked secrets (→ see `fabianoflorentino/golang-agent-skills@golang-security` skill), and not for debugging an already-failing program (→ see `fabianoflorentino/golang-agent-skills@golang-troubleshooting` skill).">
   <summary class="entry-row">
     <span class="entry-no">06</span>
     <span class="emoji">🛡</span>
@@ -1303,7 +1300,7 @@ Avoid `init()` ordering games — use explicit constructors (see `golang-design-
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-safety/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Code Quality" data-name="golang-security" data-search="security best practices and vulnerability prevention for golang — injection (sql, command, xss), cryptography, path traversal, ssrf and http security headers, cookies, secrets management, memory safety, pii in logs, stride/dread threat modeling, plus `gosec` sast, race detection, and fuzz testing. apply when writing, reviewing, or auditing go code for security, or when touching crypto, file or network i/o, secrets, user input, or authentication. not for non-exploitable defensive bugs such as nil panics or slice aliasing (→ see `fabianoflorentino/golang-agent-skills@golang-safety` skill), dependency vulnerability scanning with govulncheck (→ see `fabianoflorentino/golang-agent-skills@golang-dependency-management` skill), or wiring security scanners into ci pipelines (→ see `fabianoflorentino/golang-agent-skills@golang-continuous-integration` skill)." >
+<details class="entry" data-category="Code Quality" data-name="golang-security" data-search="security best practices and vulnerability prevention for golang — injection (sql, command, xss), cryptography, path traversal, ssrf and http security headers, cookies, secrets management, memory safety, pii in logs, stride/dread threat modeling, plus `gosec` sast, race detection, and fuzz testing. apply when writing, reviewing, or auditing go code for security, or when touching crypto, file or network i/o, secrets, user input, or authentication. not for non-exploitable defensive bugs such as nil panics or slice aliasing (→ see `fabianoflorentino/golang-agent-skills@golang-safety` skill), dependency vulnerability scanning with govulncheck (→ see `fabianoflorentino/golang-agent-skills@golang-dependency-management` skill), or wiring security scanners into ci pipelines (→ see `fabianoflorentino/golang-agent-skills@golang-continuous-integration` skill).">
   <summary class="entry-row">
     <span class="entry-no">07</span>
     <span class="emoji">🔒</span>
@@ -1464,7 +1461,7 @@ Anti-patterns with Go examples: [Architecture](./references/architecture.md).
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-security/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Code Quality" data-name="golang-structs-interfaces" data-search="golang struct and interface design patterns — composition, embedding, type assertions, type switches, interface segregation, dependency injection via interfaces, struct field tags, and pointer vs value receivers. use this skill when designing go types, defining or implementing interfaces, embedding structs or interfaces, writing type assertions or type switches, adding struct field tags for json/yaml/db serialization, or choosing between pointer and value receivers. also use when the user asks about &quot;accept interfaces, return structs&quot;, compile-time interface checks, or composing small interfaces into larger ones." >
+<details class="entry" data-category="Code Quality" data-name="golang-structs-interfaces" data-search="golang struct and interface design patterns — composition, embedding, type assertions, type switches, interface segregation, dependency injection via interfaces, struct field tags, and pointer vs value receivers. use this skill when designing go types, defining or implementing interfaces, embedding structs or interfaces, writing type assertions or type switches, adding struct field tags for json/yaml/db serialization, or choosing between pointer and value receivers. also use when the user asks about &quot;accept interfaces, return structs&quot;, compile-time interface checks, or composing small interfaces into larger ones.">
   <summary class="entry-row">
     <span class="entry-no">08</span>
     <span class="emoji">🧩</span>
@@ -1638,7 +1635,7 @@ That last pointer case decides it: receiver style MUST be consistent across ever
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-structs-interfaces/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section>
-<section class="category" id="cat-architecture-design" data-category="Architecture &amp; Design"><header class="category-head"><span class="cat-index">03</span><h2>Architecture &amp; Design</h2><span class="count">8 skills</span></header><div class="entries"><details class="entry" data-category="Architecture &amp; Design" data-name="golang-concurrency" data-search="golang concurrency design — goroutine lifecycle and leak prevention, channels and `select`, channel ownership and direction, `sync.mutex`/`rwmutex`/`sync.map`/`sync.once`/atomics, `errgroup`, `singleflight`, worker pools, and fan-out/fan-in pipelines. use when writing or reviewing concurrent go code, when choosing between channels and mutexes, when protecting a shared map or counter, or when a goroutine has no clear exit. not for defensive coding unrelated to concurrency such as nil panics, slice aliasing, or numeric overflow (→ see `fabianoflorentino/golang-agent-skills@golang-safety` skill), and not for debugging a specific hung, crashing, or racing program after the fact (→ see `fabianoflorentino/golang-agent-skills@golang-troubleshooting` skill)." >
+<section class="category" id="cat-architecture-design" data-category="Architecture &amp; Design"><header class="category-head"><span class="cat-index">03</span><h2>Architecture &amp; Design</h2><span class="count">8 skills</span></header><div class="entries"><details class="entry" data-category="Architecture &amp; Design" data-name="golang-concurrency" data-search="golang concurrency design — goroutine lifecycle and leak prevention, channels and `select`, channel ownership and direction, `sync.mutex`/`rwmutex`/`sync.map`/`sync.once`/atomics, `errgroup`, `singleflight`, worker pools, and fan-out/fan-in pipelines. use when writing or reviewing concurrent go code, when choosing between channels and mutexes, when protecting a shared map or counter, or when a goroutine has no clear exit. not for defensive coding unrelated to concurrency such as nil panics, slice aliasing, or numeric overflow (→ see `fabianoflorentino/golang-agent-skills@golang-safety` skill), and not for debugging a specific hung, crashing, or racing program after the fact (→ see `fabianoflorentino/golang-agent-skills@golang-troubleshooting` skill).">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">⚡</span>
@@ -1769,7 +1766,7 @@ Keep the cheap signals: `runtime.NumGoroutine()` in health checks, `/debug/pprof
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-concurrency/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Architecture &amp; Design" data-name="golang-context" data-search="idiomatic context.context usage in golang — propagation through api boundaries, cancellation, timeouts and deadlines, request-scoped values, context.withoutcancel for background work outliving requests. apply when designing context propagation across layers, debugging leaked or unexpired contexts, choosing between context.background/todo/withoutcancel, or storing values in context. not for code that merely accepts ctx as first parameter." >
+<details class="entry" data-category="Architecture &amp; Design" data-name="golang-context" data-search="idiomatic context.context usage in golang — propagation through api boundaries, cancellation, timeouts and deadlines, request-scoped values, context.withoutcancel for background work outliving requests. apply when designing context propagation across layers, debugging leaked or unexpired contexts, choosing between context.background/todo/withoutcancel, or storing values in context. not for code that merely accepts ctx as first parameter.">
   <summary class="entry-row">
     <span class="entry-no">02</span>
     <span class="emoji">🔗</span>
@@ -1864,7 +1861,7 @@ case value := &lt;-workCh:
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-context/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Architecture &amp; Design" data-name="golang-data-structures" data-search="golang data structures — slices (internals, capacity growth, preallocation, slices package), maps (internals, hash buckets, maps package), arrays, container/list/heap/ring, strings.builder vs bytes.buffer, generic collections, pointers (unsafe.pointer, weak.pointer), and copy semantics. use when choosing or optimizing go data structures, implementing generic containers, using container/ packages, unsafe or weak pointers, or questioning slice/map internals. not for applying optimization patterns once profiling has identified a bottleneck (→ see `fabianoflorentino/golang-agent-skills@golang-performance` skill)." >
+<details class="entry" data-category="Architecture &amp; Design" data-name="golang-data-structures" data-search="golang data structures — slices (internals, capacity growth, preallocation, slices package), maps (internals, hash buckets, maps package), arrays, container/list/heap/ring, strings.builder vs bytes.buffer, generic collections, pointers (unsafe.pointer, weak.pointer), and copy semantics. use when choosing or optimizing go data structures, implementing generic containers, using container/ packages, unsafe or weak pointers, or questioning slice/map internals. not for applying optimization patterns once profiling has identified a bottleneck (→ see `fabianoflorentino/golang-agent-skills@golang-performance` skill).">
   <summary class="entry-row">
     <span class="entry-no">03</span>
     <span class="emoji">🗃</span>
@@ -2010,7 +2007,7 @@ For third-party structures (trees, sets, deques): `emirpasic/gods`, `deckarep/go
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-data-structures/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Architecture &amp; Design" data-name="golang-database" data-search="comprehensive guide for go database access — parameterized queries, struct scanning, nullable columns, transactions, isolation levels, select for update, connection pool, batch processing, context propagation, and migration tooling. use when writing, reviewing, or debugging golang code that interacts with postgresql, mariadb, mysql, or sqlite; for database testing; or for questions about database/sql, sqlx, or pgx. does not generate database schemas or migration sql." >
+<details class="entry" data-category="Architecture &amp; Design" data-name="golang-database" data-search="comprehensive guide for go database access — parameterized queries, struct scanning, nullable columns, transactions, isolation levels, select for update, connection pool, batch processing, context propagation, and migration tooling. use when writing, reviewing, or debugging golang code that interacts with postgresql, mariadb, mysql, or sqlite; for database testing; or for questions about database/sql, sqlx, or pgx. does not generate database schemas or migration sql.">
   <summary class="entry-row">
     <span class="entry-no">04</span>
     <span class="emoji">🗄</span>
@@ -2154,7 +2151,7 @@ This skill deliberately does not write schemas. An AI schema that looks right on
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-database/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Architecture &amp; Design" data-name="golang-dependency-injection" data-search="comprehensive guide for dependency injection (di) in golang. covers why di matters (testability, loose coupling, separation of concerns, lifecycle management), manual constructor injection, and di library comparison (google/wire, uber-go/dig, uber-go/fx, samber/do). use this skill when designing service architecture, setting up dependency injection, refactoring tightly coupled code, managing singletons or service factories, or when the user asks about inversion of control, service containers, or wiring dependencies in go. for a specific di library, → see `fabianoflorentino/golang-agent-skills@golang-google-wire`, `fabianoflorentino/golang-agent-skills@golang-uber-dig`, `fabianoflorentino/golang-agent-skills@golang-uber-fx`, or `fabianoflorentino/golang-agent-skills@golang-samber-do` skills." >
+<details class="entry" data-category="Architecture &amp; Design" data-name="golang-dependency-injection" data-search="comprehensive guide for dependency injection (di) in golang. covers why di matters (testability, loose coupling, separation of concerns, lifecycle management), manual constructor injection, and di library comparison (google/wire, uber-go/dig, uber-go/fx, samber/do). use this skill when designing service architecture, setting up dependency injection, refactoring tightly coupled code, managing singletons or service factories, or when the user asks about inversion of control, service containers, or wiring dependencies in go. for a specific di library, → see `fabianoflorentino/golang-agent-skills@golang-google-wire`, `fabianoflorentino/golang-agent-skills@golang-uber-dig`, `fabianoflorentino/golang-agent-skills@golang-uber-fx`, or `fabianoflorentino/golang-agent-skills@golang-samber-do` skills.">
   <summary class="entry-row">
     <span class="entry-no">05</span>
     <span class="emoji">🔌</span>
@@ -2304,7 +2301,7 @@ func (m *MockStore) FindByID(ctx context.Context, id string) (*User, error) {
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-dependency-injection/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Architecture &amp; Design" data-name="golang-design-patterns" data-search="idiomatic golang design patterns — functional options, constructor apis, `init()` and global-state avoidance, enums, panic vs error decisions, resource management and lifecycle, graceful shutdown, timeouts and retries, streaming and iterators, and architecture styles (clean, hexagonal, ddd, flat). apply when choosing between architectural patterns, implementing functional options, designing constructor apis, setting up graceful shutdown, applying resilience patterns, or asking which idiomatic go pattern fits a specific problem. not for wiring a di container or comparing di libraries (→ see `fabianoflorentino/golang-agent-skills@golang-dependency-injection` skill), nor for error wrapping, `errors.is`/`as`, or logging mechanics (→ see `fabianoflorentino/golang-agent-skills@golang-error-handling` skill)." >
+<details class="entry" data-category="Architecture &amp; Design" data-name="golang-design-patterns" data-search="idiomatic golang design patterns — functional options, constructor apis, `init()` and global-state avoidance, enums, panic vs error decisions, resource management and lifecycle, graceful shutdown, timeouts and retries, streaming and iterators, and architecture styles (clean, hexagonal, ddd, flat). apply when choosing between architectural patterns, implementing functional options, designing constructor apis, setting up graceful shutdown, applying resilience patterns, or asking which idiomatic go pattern fits a specific problem. not for wiring a di container or comparing di libraries (→ see `fabianoflorentino/golang-agent-skills@golang-dependency-injection` skill), nor for error wrapping, `errors.is`/`as`, or logging mechanics (→ see `fabianoflorentino/golang-agent-skills@golang-error-handling` skill).">
   <summary class="entry-row">
     <span class="entry-no">06</span>
     <span class="emoji">🏗</span>
@@ -2464,7 +2461,7 @@ Per-style guides: [`architecture.md`](./references/architecture.md), [`clean-arc
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-design-patterns/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Architecture &amp; Design" data-name="golang-modernize" data-search="modernize golang code to use recent language features, standard library improvements, and idiomatic patterns. use when reviewing go code with old-style patterns, when encountering a deprecation warning, or when the user asks for modernization, a go version upgrade (e.g. to go 1.27), or a ci/tooling refresh. not for structural refactors, extracting functions, or moving code between packages (→ see `fabianoflorentino/golang-agent-skills@golang-refactoring` skill)." >
+<details class="entry" data-category="Architecture &amp; Design" data-name="golang-modernize" data-search="modernize golang code to use recent language features, standard library improvements, and idiomatic patterns. use when reviewing go code with old-style patterns, when encountering a deprecation warning, or when the user asks for modernization, a go version upgrade (e.g. to go 1.27), or a ci/tooling refresh. not for structural refactors, extracting functions, or moving code between packages (→ see `fabianoflorentino/golang-agent-skills@golang-refactoring` skill).">
   <summary class="entry-row">
     <span class="entry-no">07</span>
     <span class="emoji">🔄</span>
@@ -2574,7 +2571,7 @@ Before/after examples for each version: [versions.md](references/versions.md). C
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-modernize/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Architecture &amp; Design" data-name="golang-refactoring" data-search="golang refactoring — safe, at-scale restructuring of existing go code: a coverage-adaptive safety net, behavior-preserving transforms (gopls rename/extract, `gofmt -r`, `gopatch`), the fowler catalog mapped to go, breaking import cycles, and small stacked prs. apply when a function or type has grown too large, a code smell blocks a feature, or the user asks to refactor go code — also for renaming at scale, extracting functions or interfaces, moving code between packages, or planning a multi-step refactor. target styles owned elsewhere → see `fabianoflorentino/golang-agent-skills@golang-naming` (renames), `fabianoflorentino/golang-agent-skills@golang-project-layout` (splits), `fabianoflorentino/golang-agent-skills@golang-modernize` (idioms), `fabianoflorentino/golang-agent-skills@golang-code-style` (control flow), `fabianoflorentino/golang-agent-skills@golang-design-patterns` (patterns/di)." >
+<details class="entry" data-category="Architecture &amp; Design" data-name="golang-refactoring" data-search="golang refactoring — safe, at-scale restructuring of existing go code: a coverage-adaptive safety net, behavior-preserving transforms (gopls rename/extract, `gofmt -r`, `gopatch`), the fowler catalog mapped to go, breaking import cycles, and small stacked prs. apply when a function or type has grown too large, a code smell blocks a feature, or the user asks to refactor go code — also for renaming at scale, extracting functions or interfaces, moving code between packages, or planning a multi-step refactor. target styles owned elsewhere → see `fabianoflorentino/golang-agent-skills@golang-naming` (renames), `fabianoflorentino/golang-agent-skills@golang-project-layout` (splits), `fabianoflorentino/golang-agent-skills@golang-modernize` (idioms), `fabianoflorentino/golang-agent-skills@golang-code-style` (control flow), `fabianoflorentino/golang-agent-skills@golang-design-patterns` (patterns/di).">
   <summary class="entry-row">
     <span class="entry-no">08</span>
     <span class="emoji">♻️</span>
@@ -2670,7 +2667,7 @@ If you hit a bug in `gopls`, file it at &lt;https://github.com/golang/go/issues&
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-refactoring/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section>
-<section class="category" id="cat-qa-performance" data-category="QA &amp; Performance"><header class="category-head"><span class="cat-index">04</span><h2>QA &amp; Performance</h2><span class="count">5 skills</span></header><div class="entries"><details class="entry" data-category="QA &amp; Performance" data-name="golang-benchmark" data-search="golang benchmarking, profiling, and performance measurement. use when writing, running, or comparing go benchmarks, profiling hot paths with pprof, interpreting cpu/memory/trace profiles, analyzing results with benchstat, setting up ci benchmark regression detection, or investigating production performance with prometheus runtime metrics. also use when the developer needs deep analysis on a specific performance indicator - this skill provides the measurement methodology, while `fabianoflorentino/golang-agent-skills@golang-performance` provides the optimization patterns." >
+<section class="category" id="cat-qa-performance" data-category="QA &amp; Performance"><header class="category-head"><span class="cat-index">04</span><h2>QA &amp; Performance</h2><span class="count">5 skills</span></header><div class="entries"><details class="entry" data-category="QA &amp; Performance" data-name="golang-benchmark" data-search="golang benchmarking, profiling, and performance measurement. use when writing, running, or comparing go benchmarks, profiling hot paths with pprof, interpreting cpu/memory/trace profiles, analyzing results with benchstat, setting up ci benchmark regression detection, or investigating production performance with prometheus runtime metrics. also use when the developer needs deep analysis on a specific performance indicator - this skill provides the measurement methodology, while `fabianoflorentino/golang-agent-skills@golang-performance` provides the optimization patterns.">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">📊</span>
@@ -2808,7 +2805,7 @@ Interpret: CPU profile shows where time went; `-alloc_objects` shows allocation 
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-benchmark/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="QA &amp; Performance" data-name="golang-observability" data-search="golang everyday observability — the always-on signals in production. covers structured logging with slog, prometheus metrics, opentelemetry distributed tracing, continuous profiling with pprof/pyroscope, server-side rum event tracking, alerting, and grafana dashboards. apply when instrumenting go services for production monitoring, setting up metrics or alerting, adding opentelemetry tracing, correlating logs with traces, migrating legacy loggers (zap/logrus/zerolog) to slog, adding observability to new features, or implementing gdpr/ccpa-compliant tracking with customer data platforms (cdp). not for temporary deep-dive performance investigation (→ see `fabianoflorentino/golang-agent-skills@golang-benchmark` and `fabianoflorentino/golang-agent-skills@golang-performance` skills)." >
+<details class="entry" data-category="QA &amp; Performance" data-name="golang-observability" data-search="golang everyday observability — the always-on signals in production. covers structured logging with slog, prometheus metrics, opentelemetry distributed tracing, continuous profiling with pprof/pyroscope, server-side rum event tracking, alerting, and grafana dashboards. apply when instrumenting go services for production monitoring, setting up metrics or alerting, adding opentelemetry tracing, correlating logs with traces, migrating legacy loggers (zap/logrus/zerolog) to slog, adding observability to new features, or implementing gdpr/ccpa-compliant tracking with customer data platforms (cdp). not for temporary deep-dive performance investigation (→ see `fabianoflorentino/golang-agent-skills@golang-benchmark` and `fabianoflorentino/golang-agent-skills@golang-performance` skills).">
   <summary class="entry-row">
     <span class="entry-no">02</span>
     <span class="emoji">📡</span>
@@ -2955,7 +2952,7 @@ prometheus.NewHistogram(...)
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-observability/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="QA &amp; Performance" data-name="golang-performance" data-search="golang performance optimization patterns and methodology - if x bottleneck, then apply y. covers allocation reduction, cpu efficiency, memory layout, gc tuning, pooling, caching, and hot-path optimization. use when profiling or benchmarks have identified a bottleneck and you need the right optimization pattern to fix it. also use when performing performance code review to suggest improvements or benchmarks that could help identify quick performance gains. not for measurement methodology (→ see `fabianoflorentino/golang-agent-skills@golang-benchmark` skill) or debugging workflow (→ see `fabianoflorentino/golang-agent-skills@golang-troubleshooting` skill)." >
+<details class="entry" data-category="QA &amp; Performance" data-name="golang-performance" data-search="golang performance optimization patterns and methodology - if x bottleneck, then apply y. covers allocation reduction, cpu efficiency, memory layout, gc tuning, pooling, caching, and hot-path optimization. use when profiling or benchmarks have identified a bottleneck and you need the right optimization pattern to fix it. also use when performing performance code review to suggest improvements or benchmarks that could help identify quick performance gains. not for measurement methodology (→ see `fabianoflorentino/golang-agent-skills@golang-benchmark` skill) or debugging workflow (→ see `fabianoflorentino/golang-agent-skills@golang-troubleshooting` skill).">
   <summary class="entry-row">
     <span class="entry-no">03</span>
     <span class="emoji">🏎</span>
@@ -3058,7 +3055,7 @@ Gate on benchmark drift before it ships — `benchdiff` and `cob` wiring in `gol
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-performance/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="QA &amp; Performance" data-name="golang-testing" data-search="production-ready golang tests — table-driven tests, testify suites and mocks, parallel tests, fuzzing, fixtures, goroutine leak detection with goleak, snapshot testing, code coverage, integration tests, idiomatic test naming. use when writing or reviewing go tests, choosing a testing approach, setting up go test ci, or debugging flaky/slow tests. for testify-specific apis see `fabianoflorentino/golang-agent-skills@golang-stretchr-testify`; for measurement methodology see `fabianoflorentino/golang-agent-skills@golang-benchmark`." >
+<details class="entry" data-category="QA &amp; Performance" data-name="golang-testing" data-search="production-ready golang tests — table-driven tests, testify suites and mocks, parallel tests, fuzzing, fixtures, goroutine leak detection with goleak, snapshot testing, code coverage, integration tests, idiomatic test naming. use when writing or reviewing go tests, choosing a testing approach, setting up go test ci, or debugging flaky/slow tests. for testify-specific apis see `fabianoflorentino/golang-agent-skills@golang-stretchr-testify`; for measurement methodology see `fabianoflorentino/golang-agent-skills@golang-benchmark`.">
   <summary class="entry-row">
     <span class="entry-no">04</span>
     <span class="emoji">🧪</span>
@@ -3217,7 +3214,7 @@ go test -fuzz=FuzzParse ./...              # fuzzing (see docs for -fuzztime)
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-testing/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="QA &amp; Performance" data-name="golang-troubleshooting" data-search="troubleshoot golang programs systematically - find and fix the root cause. use when encountering bugs, crashes, deadlocks, races, or unexpected behavior in go code. covers debugging methodology, common go pitfalls, test-driven debugging, pprof setup and capture, delve, race detection, godebug tracing, and production debugging. start here for any &#x27;something is wrong&#x27; situation. not for interpreting profiles or benchmarking (→ see `fabianoflorentino/golang-agent-skills@golang-benchmark` skill), applying optimization patterns (→ see `fabianoflorentino/golang-agent-skills@golang-performance` skill), or designing new code (→ see `fabianoflorentino/golang-agent-skills@golang-safety` skill for defensive coding, `fabianoflorentino/golang-agent-skills@golang-concurrency` skill for concurrency design)." >
+<details class="entry" data-category="QA &amp; Performance" data-name="golang-troubleshooting" data-search="troubleshoot golang programs systematically - find and fix the root cause. use when encountering bugs, crashes, deadlocks, races, or unexpected behavior in go code. covers debugging methodology, common go pitfalls, test-driven debugging, pprof setup and capture, delve, race detection, godebug tracing, and production debugging. start here for any &#x27;something is wrong&#x27; situation. not for interpreting profiles or benchmarking (→ see `fabianoflorentino/golang-agent-skills@golang-benchmark` skill), applying optimization patterns (→ see `fabianoflorentino/golang-agent-skills@golang-performance` skill), or designing new code (→ see `fabianoflorentino/golang-agent-skills@golang-safety` skill for defensive coding, `fabianoflorentino/golang-agent-skills@golang-concurrency` skill for concurrency design).">
   <summary class="entry-row">
     <span class="entry-no">05</span>
     <span class="emoji">🔍</span>
@@ -3308,7 +3305,7 @@ Most Go bugs reduce to: missing error checks, nil dereferences, forgotten contex
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-troubleshooting/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section>
-<section class="category" id="cat-project-setup" data-category="Project Setup"><header class="category-head"><span class="cat-index">05</span><h2>Project Setup</h2><span class="count">8 skills</span></header><div class="entries"><details class="entry" data-category="Project Setup" data-name="golang-cli" data-search="golang cli application development. use when building, modifying, or reviewing a go cli tool — especially for command structure, flag handling, configuration layering, version embedding, exit codes, i/o patterns, signal handling, shell completion, argument validation, and cli unit testing. also triggers when code uses cobra, viper, or urfave/cli. for cobra-specific apis → see `fabianoflorentino/golang-agent-skills@golang-spf13-cobra` skill; for viper configuration layering → see `fabianoflorentino/golang-agent-skills@golang-spf13-viper` skill." >
+<section class="category" id="cat-project-setup" data-category="Project Setup"><header class="category-head"><span class="cat-index">05</span><h2>Project Setup</h2><span class="count">8 skills</span></header><div class="entries"><details class="entry" data-category="Project Setup" data-name="golang-cli" data-search="golang cli application development. use when building, modifying, or reviewing a go cli tool — especially for command structure, flag handling, configuration layering, version embedding, exit codes, i/o patterns, signal handling, shell completion, argument validation, and cli unit testing. also triggers when code uses cobra, viper, or urfave/cli. for cobra-specific apis → see `fabianoflorentino/golang-agent-skills@golang-spf13-cobra` skill; for viper configuration layering → see `fabianoflorentino/golang-agent-skills@golang-spf13-viper` skill.">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">💻</span>
@@ -3452,7 +3449,7 @@ Execute commands programmatically, capture `OutOrStdout`, assert. The `cli_test.
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-cli/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Project Setup" data-name="golang-continuous-integration" data-search="github actions ci/cd pipeline configuration for golang projects — workflow files for test, lint, sast, coverage and vulnerability-scan jobs, dependabot and renovate config files, goreleaser release pipelines, docker build/push, repository security settings, and ai-driven pr review. use when setting up or improving go project ci, writing or fixing `.github/workflows/*.yml`, adding a linter or security scanner as a pipeline job, wiring automated dependency-update bots, or adding quality gates. covers wiring tools into a pipeline, not the analysis they perform: do not use for choosing or interpreting security findings (→ see `fabianoflorentino/golang-agent-skills@golang-security` skill) or for choosing, upgrading, or auditing dependency versions (→ see `fabianoflorentino/golang-agent-skills@golang-dependency-management` skill)." >
+<details class="entry" data-category="Project Setup" data-name="golang-continuous-integration" data-search="github actions ci/cd pipeline configuration for golang projects — workflow files for test, lint, sast, coverage and vulnerability-scan jobs, dependabot and renovate config files, goreleaser release pipelines, docker build/push, repository security settings, and ai-driven pr review. use when setting up or improving go project ci, writing or fixing `.github/workflows/*.yml`, adding a linter or security scanner as a pipeline job, wiring automated dependency-update bots, or adding quality gates. covers wiring tools into a pipeline, not the analysis they perform: do not use for choosing or interpreting security findings (→ see `fabianoflorentino/golang-agent-skills@golang-security` skill) or for choosing, upgrading, or auditing dependency versions (→ see `fabianoflorentino/golang-agent-skills@golang-dependency-management` skill).">
   <summary class="entry-row">
     <span class="entry-no">02</span>
     <span class="emoji">🚀</span>
@@ -3594,7 +3591,7 @@ ln -s .agents .copilot
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-continuous-integration/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Project Setup" data-name="golang-dependency-management" data-search="dependency management for golang projects — go.mod and go.sum, `go get` install and upgrade flows, minimal version selection, conflict resolution with replace/exclude/retract, `govulncheck` scanning of the module tree, outdated dependency and binary size auditing, vendoring, `tool` directives, and go.work workspaces. use when adding, removing, or upgrading go dependencies, deciding whether to take on a package, resolving version conflicts, or auditing what a module pulls in. covers choosing and upgrading dependency versions, not the surrounding tooling: do not use for fixing an exploitable vulnerability in code (→ see `fabianoflorentino/golang-agent-skills@golang-security` skill) or for wiring dependabot/renovate update bots into ci workflows (→ see `fabianoflorentino/golang-agent-skills@golang-continuous-integration` skill)." >
+<details class="entry" data-category="Project Setup" data-name="golang-dependency-management" data-search="dependency management for golang projects — go.mod and go.sum, `go get` install and upgrade flows, minimal version selection, conflict resolution with replace/exclude/retract, `govulncheck` scanning of the module tree, outdated dependency and binary size auditing, vendoring, `tool` directives, and go.work workspaces. use when adding, removing, or upgrading go dependencies, deciding whether to take on a package, resolving version conflicts, or auditing what a module pulls in. covers choosing and upgrading dependency versions, not the surrounding tooling: do not use for fixing an exploitable vulnerability in code (→ see `fabianoflorentino/golang-agent-skills@golang-security` skill) or for wiring dependabot/renovate update bots into ci workflows (→ see `fabianoflorentino/golang-agent-skills@golang-continuous-integration` skill).">
   <summary class="entry-row">
     <span class="entry-no">03</span>
     <span class="emoji">📦</span>
@@ -3725,7 +3722,7 @@ go mod verify
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-dependency-management/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Project Setup" data-name="golang-gopls" data-search="golang semantic code intelligence via `gopls`, the official go language server — go-to-definition, find references, call/implementation hierarchy, workspace symbol search, package api discovery, diagnostics, safe rename, refactors (extract/inline/fill/rewrite code actions), formatting, and generated tests. reaches an agent via gopls&#x27;s own mcp server (`go_*` tools), claude code&#x27;s native `lsp` tool, or the `gopls` cli. use when navigating or refactoring go code — jumping to a definition, finding call sites before a rename, understanding a file&#x27;s or package&#x27;s dependencies, running diagnostics after an edit, or extracting/inlining/renaming. not for the published ecosystem — packages not in your `go.mod`, versions, licenses, importers — → see `fabianoflorentino/golang-agent-skills@golang-pkg-go-dev` skill (`godig`). not for a whole-tree vulnerability audit → see `fabianoflorentino/golang-agent-skills@golang-security` skill (`govulncheck`)." >
+<details class="entry" data-category="Project Setup" data-name="golang-gopls" data-search="golang semantic code intelligence via `gopls`, the official go language server — go-to-definition, find references, call/implementation hierarchy, workspace symbol search, package api discovery, diagnostics, safe rename, refactors (extract/inline/fill/rewrite code actions), formatting, and generated tests. reaches an agent via gopls&#x27;s own mcp server (`go_*` tools), claude code&#x27;s native `lsp` tool, or the `gopls` cli. use when navigating or refactoring go code — jumping to a definition, finding call sites before a rename, understanding a file&#x27;s or package&#x27;s dependencies, running diagnostics after an edit, or extracting/inlining/renaming. not for the published ecosystem — packages not in your `go.mod`, versions, licenses, importers — → see `fabianoflorentino/golang-agent-skills@golang-pkg-go-dev` skill (`godig`). not for a whole-tree vulnerability audit → see `fabianoflorentino/golang-agent-skills@golang-security` skill (`govulncheck`).">
   <summary class="entry-row">
     <span class="entry-no">04</span>
     <span class="emoji">🛰️</span>
@@ -3812,7 +3809,7 @@ Set up details, every MCP tool, CLI reference, and settings: [mcp.md](references
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-gopls/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Project Setup" data-name="golang-pkg-go-dev" data-search="golang package and module lookup via `godig`, a pkg.go.dev api client (cli + mcp server). use for any go/golang library&#x27;s documentation, api signatures, symbols, usage examples, which versions exist, licenses, whether a dependency has cves, or who imports a package — prefer this over context7 for any go package or module. read-only, no auth. not for upgrading dependencies (→ see `fabianoflorentino/golang-agent-skills@golang-dependency-management` skill), choosing a library (→ see `fabianoflorentino/golang-agent-skills@golang-popular-libraries` skill), or local symbols and an already-used dependency&#x27;s resolved source, call sites, and generic instantiations (→ see `fabianoflorentino/golang-agent-skills@golang-gopls` skill)." >
+<details class="entry" data-category="Project Setup" data-name="golang-pkg-go-dev" data-search="golang package and module lookup via `godig`, a pkg.go.dev api client (cli + mcp server). use for any go/golang library&#x27;s documentation, api signatures, symbols, usage examples, which versions exist, licenses, whether a dependency has cves, or who imports a package — prefer this over context7 for any go package or module. read-only, no auth. not for upgrading dependencies (→ see `fabianoflorentino/golang-agent-skills@golang-dependency-management` skill), choosing a library (→ see `fabianoflorentino/golang-agent-skills@golang-popular-libraries` skill), or local symbols and an already-used dependency&#x27;s resolved source, call sites, and generic instantiations (→ see `fabianoflorentino/golang-agent-skills@golang-gopls` skill).">
   <summary class="entry-row">
     <span class="entry-no">05</span>
     <span class="emoji">🔎</span>
@@ -3945,7 +3942,7 @@ This skill is not exhaustive — `godig --help` and each subcommand&#x27;s `--he
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pkg-go-dev/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Project Setup" data-name="golang-popular-libraries" data-search="golang library and framework selection — vetted production-ready options by category (web, database, testing, logging, messaging), new and experimental stdlib packages, standard-library-first tradeoffs, and maturity signals (maintenance, license, importer counts). apply when the user asks for library suggestions, wants to compare alternatives, needs to choose a library for a specific task, or when a new dependency is being added to the project. not for a specific library&#x27;s api once chosen (→ see that library&#x27;s dedicated skill, e.g. `fabianoflorentino/golang-agent-skills@golang-samber-lo`), nor for go.mod mechanics, upgrades, or vulnerability audits (→ see `fabianoflorentino/golang-agent-skills@golang-dependency-management` skill)." >
+<details class="entry" data-category="Project Setup" data-name="golang-popular-libraries" data-search="golang library and framework selection — vetted production-ready options by category (web, database, testing, logging, messaging), new and experimental stdlib packages, standard-library-first tradeoffs, and maturity signals (maintenance, license, importer counts). apply when the user asks for library suggestions, wants to compare alternatives, needs to choose a library for a specific task, or when a new dependency is being added to the project. not for a specific library&#x27;s api once chosen (→ see that library&#x27;s dedicated skill, e.g. `fabianoflorentino/golang-agent-skills@golang-samber-lo`), nor for go.mod mechanics, upgrades, or vulnerability audits (→ see `fabianoflorentino/golang-agent-skills@golang-dependency-management` skill).">
   <summary class="entry-row">
     <span class="entry-no">06</span>
     <span class="emoji">📚</span>
@@ -4018,7 +4015,7 @@ More candidates: &lt;https://github.com/avelino/awesome-go&gt;. The catalog is n
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-popular-libraries/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Project Setup" data-name="golang-project-layout" data-search="golang project layout and workspace setup — cmd/internal/pkg directory conventions, module and package naming, go.work workspaces, and essential configuration files. use when starting a new go project, organizing an existing codebase, setting up a monorepo with multiple packages, creating cli tools with multiple main packages, or discussing package restructuring, package splits, or module splits. not for restructuring existing code without a layout change (→ see `fabianoflorentino/golang-agent-skills@golang-refactoring` skill)." >
+<details class="entry" data-category="Project Setup" data-name="golang-project-layout" data-search="golang project layout and workspace setup — cmd/internal/pkg directory conventions, module and package naming, go.work workspaces, and essential configuration files. use when starting a new go project, organizing an existing codebase, setting up a monorepo with multiple packages, creating cli tools with multiple main packages, or discussing package restructuring, package splits, or module splits. not for restructuring existing code without a layout change (→ see `fabianoflorentino/golang-agent-skills@golang-refactoring` skill).">
   <summary class="entry-row">
     <span class="entry-no">07</span>
     <span class="emoji">📁</span>
@@ -4119,7 +4116,7 @@ Co-locate `_test.go` files with the code they test and keep fixtures under `test
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-project-layout/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Project Setup" data-name="golang-stay-updated" data-search="golang ecosystem watch list — official sources (go.dev/blog, pkg.go.dev, tour.golang.org, golang-nuts), newsletters (golang weekly, awesome go newsletter), communities (r/golang, gophers.slack.com, go forum, go.dev/wiki), blogs (dave cheney, ardan labs, rob pike), youtube channels (gopher academy, gophercon eu/uk), conferences, and go contributors to follow on github, x and bluesky. use when seeking golang learning resources, discovering new libraries or tools, finding community channels or meetups, picking go people to follow, or keeping up with go language changes and releases. not for querying a specific module&#x27;s versions, docs, or vulnerabilities from the cli (→ see `fabianoflorentino/golang-agent-skills@golang-pkg-go-dev` skill)." >
+<details class="entry" data-category="Project Setup" data-name="golang-stay-updated" data-search="golang ecosystem watch list — official sources (go.dev/blog, pkg.go.dev, tour.golang.org, golang-nuts), newsletters (golang weekly, awesome go newsletter), communities (r/golang, gophers.slack.com, go forum, go.dev/wiki), blogs (dave cheney, ardan labs, rob pike), youtube channels (gopher academy, gophercon eu/uk), conferences, and go contributors to follow on github, x and bluesky. use when seeking golang learning resources, discovering new libraries or tools, finding community channels or meetups, picking go people to follow, or keeping up with go language changes and releases. not for querying a specific module&#x27;s versions, docs, or vulnerabilities from the cli (→ see `fabianoflorentino/golang-agent-skills@golang-pkg-go-dev` skill).">
   <summary class="entry-row">
     <span class="entry-no">08</span>
     <span class="emoji">📰</span>
@@ -4224,7 +4221,7 @@ Suggest additions or corrections via a GitHub issue on this repo.</pre>
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-stay-updated/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section>
-<section class="category" id="cat-apis" data-category="APIs"><header class="category-head"><span class="cat-index">06</span><h2>APIs</h2><span class="count">4 skills</span></header><div class="entries"><details class="entry" data-category="APIs" data-name="golang-rest" data-search="golang rest api development with net/http — resource and method design, json contract and encoding, rfc 9457 problem+json errors, request validation, pagination (cursor vs offset), idempotency keys, content negotiation, versioning with deprecation headers, proper http.server timeouts, and httptest-based testing. apply when building, reviewing or debugging a rest/json api in go, or when the codebase uses net/http routing (go 1.22+ patterns) or chi, gin, echo handlers." >
+<section class="category" id="cat-apis" data-category="APIs"><header class="category-head"><span class="cat-index">06</span><h2>APIs</h2><span class="count">4 skills</span></header><div class="entries"><details class="entry" data-category="APIs" data-name="golang-rest" data-search="golang rest api development with net/http — resource and method design, json contract and encoding, rfc 9457 problem+json errors, request validation, pagination (cursor vs offset), idempotency keys, content negotiation, versioning with deprecation headers, proper http.server timeouts, and httptest-based testing. apply when building, reviewing or debugging a rest/json api in go, or when the codebase uses net/http routing (go 1.22+ patterns) or chi, gin, echo handlers.">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">🌐</span>
@@ -4327,7 +4324,7 @@ Suggest additions or corrections via a GitHub issue on this repo.</pre>
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-rest/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="APIs" data-name="golang-graphql" data-search="implements graphql apis in golang using gqlgen or graphql-go. apply when building graphql servers, designing schemas, writing resolvers, handling subscriptions, or integrating graphql with existing go http services. also apply when the codebase imports `github.com/99designs/gqlgen` or `github.com/graph-gophers/graphql-go`." >
+<details class="entry" data-category="APIs" data-name="golang-graphql" data-search="implements graphql apis in golang using gqlgen or graphql-go. apply when building graphql servers, designing schemas, writing resolvers, handling subscriptions, or integrating graphql with existing go http services. also apply when the codebase imports `github.com/99designs/gqlgen` or `github.com/graph-gophers/graphql-go`.">
   <summary class="entry-row">
     <span class="entry-no">02</span>
     <span class="emoji">🔮</span>
@@ -4546,7 +4543,7 @@ For graph-gophers, pass `graphql.MaxDepth(10)` and `graphql.MaxParallelism(10)` 
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-graphql/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="APIs" data-name="golang-grpc" data-search="provides grpc usage guidelines, protobuf organization, and production-ready patterns for golang microservices. use when implementing, reviewing, or debugging grpc servers/clients, writing proto files, setting up interceptors, handling grpc errors with status codes, configuring tls/mtls, testing with bufconn, or working with streaming rpcs." >
+<details class="entry" data-category="APIs" data-name="golang-grpc" data-search="provides grpc usage guidelines, protobuf organization, and production-ready patterns for golang microservices. use when implementing, reviewing, or debugging grpc servers/clients, writing proto files, setting up interceptors, handling grpc errors with status codes, configuring tls/mtls, testing with bufconn, or working with streaming rpcs.">
   <summary class="entry-row">
     <span class="entry-no">03</span>
     <span class="emoji">🌐</span>
@@ -4795,7 +4792,7 @@ Profile before bolting on connection pools — multiplexing already serves most 
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-grpc/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="APIs" data-name="golang-swagger" data-search="golang openapi/swagger documentation with swaggo/swag — annotation comments (@summary, @param, @success, @router, @security), swag init code generation, framework integrations (gin, echo, fiber, chi, net/http), security definitions (bearer/jwt, oauth2, api key), and struct tags (swaggertype, enums, example, swaggerignore). apply when adding or maintaining swagger/openapi docs in a go project, or when the codebase imports github.com/swaggo/swag, github.com/swaggo/gin-swagger, github.com/swaggo/echo-swagger, github.com/swaggo/http-swagger, or github.com/swaggo/files." >
+<details class="entry" data-category="APIs" data-name="golang-swagger" data-search="golang openapi/swagger documentation with swaggo/swag — annotation comments (@summary, @param, @success, @router, @security), swag init code generation, framework integrations (gin, echo, fiber, chi, net/http), security definitions (bearer/jwt, oauth2, api key), and struct tags (swaggertype, enums, example, swaggerignore). apply when adding or maintaining swagger/openapi docs in a go project, or when the codebase imports github.com/swaggo/swag, github.com/swaggo/gin-swagger, github.com/swaggo/echo-swagger, github.com/swaggo/http-swagger, or github.com/swaggo/files.">
   <summary class="entry-row">
     <span class="entry-no">04</span>
     <span class="emoji">📋</span>
@@ -4982,7 +4979,7 @@ type CreateUserRequest struct {
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-swagger/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section>
-<section class="category" id="cat-dependency-injection" data-category="Dependency Injection"><header class="category-head"><span class="cat-index">07</span><h2>Dependency Injection</h2><span class="count">3 skills</span></header><div class="entries"><details class="entry" data-category="Dependency Injection" data-name="golang-google-wire" data-search="compile-time dependency injection in golang using google/wire — wire.newset, wire.build, wire.bind (interface→concrete), wire.struct, wire.value, wire.interfacevalue, wire.fieldsof, cleanup functions, //go:build wireinject injector files, and generated wire_gen.go. apply when using or adopting google/wire, when the codebase imports `github.com/google/wire`, or when wiring an application graph at compile time via `wire.build`. for runtime di with reflection, see `fabianoflorentino/golang-agent-skills@golang-uber-dig` skill." >
+<section class="category" id="cat-dependency-injection" data-category="Dependency Injection"><header class="category-head"><span class="cat-index">07</span><h2>Dependency Injection</h2><span class="count">3 skills</span></header><div class="entries"><details class="entry" data-category="Dependency Injection" data-name="golang-google-wire" data-search="compile-time dependency injection in golang using google/wire — wire.newset, wire.build, wire.bind (interface→concrete), wire.struct, wire.value, wire.interfacevalue, wire.fieldsof, cleanup functions, //go:build wireinject injector files, and generated wire_gen.go. apply when using or adopting google/wire, when the codebase imports `github.com/google/wire`, or when wiring an application graph at compile time via `wire.build`. for runtime di with reflection, see `fabianoflorentino/golang-agent-skills@golang-uber-dig` skill.">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">🪡</span>
@@ -5159,7 +5156,7 @@ Library bugs: [google/wire issues](https://github.com/google/wire/issues).</pre>
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-google-wire/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Dependency Injection" data-name="golang-uber-dig" data-search="implements dependency injection in golang using uber-go/dig — reflection-based container, provide/invoke, dig.in/dig.out parameter and result objects, named values, value groups, optional dependencies, scopes, and decorate. apply when using or adopting uber-go/dig, when the codebase imports `go.uber.org/dig`, or when wiring an application graph at startup. for higher-level lifecycle and modules, see `fabianoflorentino/golang-agent-skills@golang-uber-fx` skill." >
+<details class="entry" data-category="Dependency Injection" data-name="golang-uber-dig" data-search="implements dependency injection in golang using uber-go/dig — reflection-based container, provide/invoke, dig.in/dig.out parameter and result objects, named values, value groups, optional dependencies, scopes, and decorate. apply when using or adopting uber-go/dig, when the codebase imports `go.uber.org/dig`, or when wiring an application graph at startup. for higher-level lifecycle and modules, see `fabianoflorentino/golang-agent-skills@golang-uber-fx` skill.">
   <summary class="entry-row">
     <span class="entry-no">02</span>
     <span class="emoji">⛏</span>
@@ -5306,7 +5303,7 @@ Library bugs: [uber-go/dig issues](https://github.com/uber-go/dig/issues).</pre>
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-uber-dig/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Dependency Injection" data-name="golang-uber-fx" data-search="golang application framework using uber-go/fx — fx.new, fx.provide, fx.invoke, fx.module, fx.lifecycle hooks, fx.annotate (name/group/as), fx.decorate, fx.supply, fx.replace, fx.withlogger, and signal-aware run(). apply when using or adopting uber-go/fx, when the codebase imports `go.uber.org/fx`, or when wiring services with fx.new. for raw di without lifecycle, see `fabianoflorentino/golang-agent-skills@golang-uber-dig` skill." >
+<details class="entry" data-category="Dependency Injection" data-name="golang-uber-fx" data-search="golang application framework using uber-go/fx — fx.new, fx.provide, fx.invoke, fx.module, fx.lifecycle hooks, fx.annotate (name/group/as), fx.decorate, fx.supply, fx.replace, fx.withlogger, and signal-aware run(). apply when using or adopting uber-go/fx, when the codebase imports `go.uber.org/fx`, or when wiring services with fx.new. for raw di without lifecycle, see `fabianoflorentino/golang-agent-skills@golang-uber-dig` skill.">
   <summary class="entry-row">
     <span class="entry-no">03</span>
     <span class="emoji">🏭</span>
@@ -5474,7 +5471,7 @@ Library bugs: [uber-go/fx issues](https://github.com/uber-go/fx/issues).
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-uber-fx/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section>
-<section class="category" id="cat-frameworks" data-category="Frameworks"><header class="category-head"><span class="cat-index">08</span><h2>Frameworks</h2><span class="count">2 skills</span></header><div class="entries"><details class="entry" data-category="Frameworks" data-name="golang-spf13-cobra" data-search="golang cli command tree library using spf13/cobra — cobra.command, rune vs run, persistentprerune hook chain, args validators (noargs, exactargs, matchall, custom), persistent vs local flags, command groups, validargsfunction, registerflagcompletionfunc, shellcompdirective, usage/help template customization, man-page and markdown doc generation, and testing with setargs/setout/seterr. apply when using or adopting spf13/cobra, or when the codebase imports `github.com/spf13/cobra`. for configuration layering alongside cobra, see the `fabianoflorentino/golang-agent-skills@golang-spf13-viper` skill. for general cli architecture (project layout, exit codes, signal handling, i/o patterns), see `fabianoflorentino/golang-agent-skills@golang-cli`." >
+<section class="category" id="cat-frameworks" data-category="Frameworks"><header class="category-head"><span class="cat-index">08</span><h2>Frameworks</h2><span class="count">2 skills</span></header><div class="entries"><details class="entry" data-category="Frameworks" data-name="golang-spf13-cobra" data-search="golang cli command tree library using spf13/cobra — cobra.command, rune vs run, persistentprerune hook chain, args validators (noargs, exactargs, matchall, custom), persistent vs local flags, command groups, validargsfunction, registerflagcompletionfunc, shellcompdirective, usage/help template customization, man-page and markdown doc generation, and testing with setargs/setout/seterr. apply when using or adopting spf13/cobra, or when the codebase imports `github.com/spf13/cobra`. for configuration layering alongside cobra, see the `fabianoflorentino/golang-agent-skills@golang-spf13-viper` skill. for general cli architecture (project layout, exit codes, signal handling, i/o patterns), see `fabianoflorentino/golang-agent-skills@golang-cli`.">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">🐍</span>
@@ -5620,7 +5617,7 @@ Library bugs: [spf13/cobra issues](https://github.com/spf13/cobra/issues).</pre>
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-spf13-cobra/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Frameworks" data-name="golang-spf13-viper" data-search="golang configuration library using spf13/viper — layered precedence (flag &gt; env &gt; file &gt; kv &gt; default), bindpflag/bindpflags, setenvprefix + setenvkeyreplacer + automaticenv, readinconfig + configfilenotfounderror, unmarshal + mapstructure struct tags, sub for sub-trees, watchconfig + onconfigchange for hot reload, viper.new() for test isolation, and remote kv integration. apply when using or adopting spf13/viper, or when the codebase imports `github.com/spf13/viper`. for cli command structure alongside viper, see the `fabianoflorentino/golang-agent-skills@golang-spf13-cobra` skill. for general cli architecture, see `fabianoflorentino/golang-agent-skills@golang-cli`." >
+<details class="entry" data-category="Frameworks" data-name="golang-spf13-viper" data-search="golang configuration library using spf13/viper — layered precedence (flag &gt; env &gt; file &gt; kv &gt; default), bindpflag/bindpflags, setenvprefix + setenvkeyreplacer + automaticenv, readinconfig + configfilenotfounderror, unmarshal + mapstructure struct tags, sub for sub-trees, watchconfig + onconfigchange for hot reload, viper.new() for test isolation, and remote kv integration. apply when using or adopting spf13/viper, or when the codebase imports `github.com/spf13/viper`. for cli command structure alongside viper, see the `fabianoflorentino/golang-agent-skills@golang-spf13-cobra` skill. for general cli architecture, see `fabianoflorentino/golang-agent-skills@golang-cli`.">
   <summary class="entry-row">
     <span class="entry-no">02</span>
     <span class="emoji">🔧</span>
@@ -5773,7 +5770,7 @@ Library bugs: [spf13/viper issues](https://github.com/spf13/viper/issues).</pre>
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-spf13-viper/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section>
-<section class="category" id="cat-samber" data-category="samber/*"><header class="category-head"><span class="cat-index">09</span><h2>samber/*</h2><span class="count">7 skills</span></header><div class="entries"><details class="entry" data-category="samber/*" data-name="golang-samber-do" data-search="dependency injection in golang using samber/do — service containers, lifecycle management, scopes, health checks, graceful shutdown, and module organization. apply when using or adopting samber/do, when the codebase imports github.com/samber/do or github.com/samber/do/v2, or when refactoring manual constructor injection into a di container." >
+<section class="category" id="cat-samber" data-category="samber/*"><header class="category-head"><span class="cat-index">09</span><h2>samber/*</h2><span class="count">7 skills</span></header><div class="entries"><details class="entry" data-category="samber/*" data-name="golang-samber-do" data-search="dependency injection in golang using samber/do — service containers, lifecycle management, scopes, health checks, graceful shutdown, and module organization. apply when using or adopting samber/do, when the codebase imports github.com/samber/do or github.com/samber/do/v2, or when refactoring manual constructor injection into a di container.">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">💉</span>
@@ -5945,7 +5942,7 @@ See [advanced usage](references/advanced.md) and [testing patterns](references/t
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-samber-do/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="samber/*" data-name="golang-samber-hot" data-search="in-memory caching in golang using samber/hot — eviction algorithms (lru, lfu, tinylfu, w-tinylfu, s3fifo, arc, twoqueue, sieve, fifo), ttl, cache loaders, sharding, stale-while-revalidate, missing key caching, and prometheus metrics. apply when using or adopting samber/hot, when the codebase imports github.com/samber/hot, or when the project repeatedly loads the same medium-to-low cardinality resources at high frequency and needs to reduce latency or backend pressure." >
+<details class="entry" data-category="samber/*" data-name="golang-samber-hot" data-search="in-memory caching in golang using samber/hot — eviction algorithms (lru, lfu, tinylfu, w-tinylfu, s3fifo, arc, twoqueue, sieve, fifo), ttl, cache loaders, sharding, stale-while-revalidate, missing key caching, and prometheus metrics. apply when using or adopting samber/hot, when the codebase imports github.com/samber/hot, or when the project repeatedly loads the same medium-to-low cardinality resources at high frequency and needs to reduce latency or backend pressure.">
   <summary class="entry-row">
     <span class="entry-no">02</span>
     <span class="emoji">🔥</span>
@@ -6058,7 +6055,7 @@ Advanced material (revalidation, sharding, missing cache, monitoring) is in [pro
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-samber-hot/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="samber/*" data-name="golang-samber-lo" data-search="functional programming helpers for golang using samber/lo — 500+ type-safe generic functions for slices, maps, channels, strings, math, tuples, and concurrency (map, filter, reduce, groupby, chunk, flatten, find, uniq, etc.). core immutable package (lo), concurrent variants (lo/parallel aka lop), in-place mutations (lo/mutable aka lom), lazy iterators (lo/it aka loi for go 1.23+), and experimental simd (lo/exp/simd). apply when using or adopting samber/lo, when the codebase imports github.com/samber/lo, or when implementing functional-style data transformations in go. not for streaming pipelines (→ see `fabianoflorentino/golang-agent-skills@golang-samber-ro` skill)." >
+<details class="entry" data-category="samber/*" data-name="golang-samber-lo" data-search="functional programming helpers for golang using samber/lo — 500+ type-safe generic functions for slices, maps, channels, strings, math, tuples, and concurrency (map, filter, reduce, groupby, chunk, flatten, find, uniq, etc.). core immutable package (lo), concurrent variants (lo/parallel aka lop), in-place mutations (lo/mutable aka lom), lazy iterators (lo/it aka loi for go 1.23+), and experimental simd (lo/exp/simd). apply when using or adopting samber/lo, when the codebase imports github.com/samber/lo, or when implementing functional-style data transformations in go. not for streaming pipelines (→ see `fabianoflorentino/golang-agent-skills@golang-samber-ro` skill).">
   <summary class="entry-row">
     <span class="entry-no">03</span>
     <span class="emoji">🧰</span>
@@ -6162,7 +6159,7 @@ The complete function list (300+ entries) lives in [API reference](references/ap
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-samber-lo/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="samber/*" data-name="golang-samber-mo" data-search="monadic types for golang using samber/mo — option, result, either, future, io, task, and state types for type-safe nullable values, error handling, and functional composition with pipeline sub-packages. apply when using or adopting samber/mo, when the codebase imports `github.com/samber/mo`, or when considering functional programming patterns as a safety design for golang. not for nil-safety and zero-value design without this library (→ see `fabianoflorentino/golang-agent-skills@golang-safety` skill), nor for native error wrapping with fmt.errorf, errors.is and errors.as (→ see `fabianoflorentino/golang-agent-skills@golang-error-handling` skill)." >
+<details class="entry" data-category="samber/*" data-name="golang-samber-mo" data-search="monadic types for golang using samber/mo — option, result, either, future, io, task, and state types for type-safe nullable values, error handling, and functional composition with pipeline sub-packages. apply when using or adopting samber/mo, when the codebase imports `github.com/samber/mo`, or when considering functional programming patterns as a safety design for golang. not for nil-safety and zero-value design without this library (→ see `fabianoflorentino/golang-agent-skills@golang-safety` skill), nor for native error wrapping with fmt.errorf, errors.is and errors.as (→ see `fabianoflorentino/golang-agent-skills@golang-error-handling` skill).">
   <summary class="entry-row">
     <span class="entry-no">04</span>
     <span class="emoji">🎭</span>
@@ -6294,7 +6291,7 @@ See the [monads guide](references/monads-guide.md) for the conceptual grounding.
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-samber-mo/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="samber/*" data-name="golang-samber-oops" data-search="structured error handling in golang with samber/oops — error builders, stack traces, error codes, error context, error wrapping, error attributes, user-facing vs developer messages, panic recovery, and logger integration. apply when using or adopting samber/oops, or when the codebase already imports github.com/samber/oops." >
+<details class="entry" data-category="samber/*" data-name="golang-samber-oops" data-search="structured error handling in golang with samber/oops — error builders, stack traces, error codes, error context, error wrapping, error attributes, user-facing vs developer messages, panic recovery, and logger integration. apply when using or adopting samber/oops, or when the codebase already imports github.com/samber/oops.">
   <summary class="entry-row">
     <span class="entry-no">05</span>
     <span class="emoji">💥</span>
@@ -6442,7 +6439,7 @@ Assertions, config, additional logger wiring: [advanced patterns](references/adv
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-samber-oops/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="samber/*" data-name="golang-samber-ro" data-search="reactive streams and event-driven programming in golang using samber/ro — reactivex implementation with 150+ type-safe operators, cold/hot observables, 5 subject types (publish, behavior, replay, async, unicast), declarative pipelines via pipe, 40+ plugins (http, cron, fsnotify, json, logging), automatic backpressure, error propagation, and go context integration. apply when using or adopting samber/ro, when the codebase imports github.com/samber/ro, or when building asynchronous event-driven pipelines, real-time data processing, streams, or reactive architectures in go. not for finite slice transforms (→ see `fabianoflorentino/golang-agent-skills@golang-samber-lo` skill)." >
+<details class="entry" data-category="samber/*" data-name="golang-samber-ro" data-search="reactive streams and event-driven programming in golang using samber/ro — reactivex implementation with 150+ type-safe operators, cold/hot observables, 5 subject types (publish, behavior, replay, async, unicast), declarative pipelines via pipe, 40+ plugins (http, cron, fsnotify, json, logging), automatic backpressure, error propagation, and go context integration. apply when using or adopting samber/ro, when the codebase imports github.com/samber/ro, or when building asynchronous event-driven pipelines, real-time data processing, streams, or reactive architectures in go. not for finite slice transforms (→ see `fabianoflorentino/golang-agent-skills@golang-samber-lo` skill).">
   <summary class="entry-row">
     <span class="entry-no">06</span>
     <span class="emoji">👁</span>
@@ -6569,7 +6566,7 @@ The full catalog lives in [operators guide](references/operators-guide.md).
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-samber-ro/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="samber/*" data-name="golang-samber-slog" data-search="structured logging extensions for golang using samber/slog-**** packages — multi-handler pipelines (slog-multi), log sampling (slog-sampling), attribute formatting (slog-formatter), http middleware (slog-fiber, slog-gin, slog-chi, slog-echo), and backend routing (slog-datadog, slog-sentry, slog-loki, slog-syslog, slog-logstash, slog-graylog...). apply when using or adopting slog, or when the codebase already imports any github.com/samber/slog-* package." >
+<details class="entry" data-category="samber/*" data-name="golang-samber-slog" data-search="structured logging extensions for golang using samber/slog-**** packages — multi-handler pipelines (slog-multi), log sampling (slog-sampling), attribute formatting (slog-formatter), http middleware (slog-fiber, slog-gin, slog-chi, slog-echo), and backend routing (slog-datadog, slog-sentry, slog-loki, slog-syslog, slog-logstash, slog-graylog...). apply when using or adopting slog, or when the codebase already imports any github.com/samber/slog-* package.">
   <summary class="entry-row">
     <span class="entry-no">07</span>
     <span class="emoji">🪵</span>
@@ -6721,7 +6718,7 @@ Sinks follow `Option{}.NewXxxHandler()`: cloud (`slog-datadog`, `slog-sentry`, `
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-samber-slog/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section>
-<section class="category" id="cat-testing" data-category="Testing"><header class="category-head"><span class="cat-index">10</span><h2>Testing</h2><span class="count">1 skill</span></header><div class="entries"><details class="entry" data-category="Testing" data-name="golang-stretchr-testify" data-search="comprehensive guide to stretchr/testify for golang testing. covers assert, require, mock, and suite packages in depth. use when writing tests with testify, creating mocks, setting up test suites, or choosing between assert and require. covers testify assertions, mock expectations, argument matchers, call verification, suite lifecycle, and advanced patterns like eventually, jsoneq, and custom matchers. apply when the codebase imports github.com/stretchr/testify." >
+<section class="category" id="cat-testing" data-category="Testing"><header class="category-head"><span class="cat-index">10</span><h2>Testing</h2><span class="count">1 skill</span></header><div class="entries"><details class="entry" data-category="Testing" data-name="golang-stretchr-testify" data-search="comprehensive guide to stretchr/testify for golang testing. covers assert, require, mock, and suite packages in depth. use when writing tests with testify, creating mocks, setting up test suites, or choosing between assert and require. covers testify assertions, mock expectations, argument matchers, call verification, suite lifecycle, and advanced patterns like eventually, jsoneq, and custom matchers. apply when the codebase imports github.com/stretchr/testify.">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">✅</span>
@@ -6876,7 +6873,7 @@ Run `testifylint` to catch argument-order inversions and assert/require misuse; 
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-stretchr-testify/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section>
-<section class="category" id="cat-pitfalls-100-go-mistakes" data-category="Pitfalls (100 Go Mistakes)"><header class="category-head"><span class="cat-index">11</span><h2>Pitfalls (100 Go Mistakes)</h2><span class="count">11 skills</span></header><div class="entries"><details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-code-organization" data-search="golang code and project organization — unintended variable shadowing, unnecessary nested code, misusing init functions, overusing getters/setters, interface pollution, producer/consumer-side interfaces, returning interfaces, any, generics, type embedding, the functional options pattern, package layout, utility packages, package name collisions, code documentation, and linters. distilled from mistakes #1-16 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang project/package structure, interfaces, generics, or documentation." open>
+<section class="category" id="cat-pitfalls-100-go-mistakes" data-category="Pitfalls (100 Go Mistakes)"><header class="category-head"><span class="cat-index">11</span><h2>Pitfalls (100 Go Mistakes)</h2><span class="count">11 skills</span></header><div class="entries"><details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-code-organization" data-search="golang code and project organization — unintended variable shadowing, unnecessary nested code, misusing init functions, overusing getters/setters, interface pollution, producer/consumer-side interfaces, returning interfaces, any, generics, type embedding, the functional options pattern, package layout, utility packages, package name collisions, code documentation, and linters. distilled from mistakes #1-16 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang project/package structure, interfaces, generics, or documentation.">
   <summary class="entry-row">
     <span class="entry-no">01</span>
     <span class="emoji">📂</span>
@@ -7058,7 +7055,7 @@ func NewServer(addr string, opts ...Option) (*http.Server, error) {
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-code-organization/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-data-types" data-search="golang numeric types and data structures — octal literal confusion, integer overflow, floating-point approximations, slice length vs capacity, inefficient slice initialization, nil vs empty slices, emptiness checks, slice copies, append side effects, slice memory leaks, map initialization, map memory leaks, and incorrect value comparison. distilled from mistakes #17-29 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang code dealing with numbers, slices, maps, or comparing values." open>
+<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-data-types" data-search="golang numeric types and data structures — octal literal confusion, integer overflow, floating-point approximations, slice length vs capacity, inefficient slice initialization, nil vs empty slices, emptiness checks, slice copies, append side effects, slice memory leaks, map initialization, map memory leaks, and incorrect value comparison. distilled from mistakes #17-29 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang code dealing with numbers, slices, maps, or comparing values.">
   <summary class="entry-row">
     <span class="entry-no">02</span>
     <span class="emoji">🧬</span>
@@ -7174,7 +7171,7 @@ counter++ // wraps silently
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-data-types/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-control-structures" data-search="golang control flow — range loop value copies, single evaluation of range arguments, per-iteration loop variables, wrong assumptions during map iteration, break/continue scoping with labels, defer inside loops, and deterministic select draining. distilled from mistakes #30-35 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang loops, switch, select, labeled statements, and defer usage." open>
+<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-control-structures" data-search="golang control flow — range loop value copies, single evaluation of range arguments, per-iteration loop variables, wrong assumptions during map iteration, break/continue scoping with labels, defer inside loops, and deterministic select draining. distilled from mistakes #30-35 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang loops, switch, select, labeled statements, and defer usage.">
   <summary class="entry-row">
     <span class="entry-no">03</span>
     <span class="emoji">🔀</span>
@@ -7272,7 +7269,7 @@ for path := range ch {
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-control-structures/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-strings" data-search="golang strings and bytes — the rune concept, len(s) returning bytes not runes, inaccurate string iteration over rune start indices, misusing trim functions, under-optimized string concatenation with strings.builder, useless string to byte conversions, and substring memory leaks. distilled from mistakes #36-41 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang code that manipulates strings, runes, or bytes." open>
+<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-strings" data-search="golang strings and bytes — the rune concept, len(s) returning bytes not runes, inaccurate string iteration over rune start indices, misusing trim functions, under-optimized string concatenation with strings.builder, useless string to byte conversions, and substring memory leaks. distilled from mistakes #36-41 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang code that manipulates strings, runes, or bytes.">
   <summary class="entry-row">
     <span class="entry-no">04</span>
     <span class="emoji">🧵</span>
@@ -7346,7 +7343,7 @@ return sb.String()
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-strings/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-functions-methods" data-search="golang functions and methods — choosing value vs pointer receivers, named result parameters, unintended side effects of zero-value named results, returning a nil receiver inside an interface, accepting filenames instead of io.reader, and how defer evaluates arguments and receivers. distilled from mistakes #42-47 of 100 go mistakes and how to avoid them. apply when designing golang functions, methods, signatures, and deferred calls." open>
+<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-functions-methods" data-search="golang functions and methods — choosing value vs pointer receivers, named result parameters, unintended side effects of zero-value named results, returning a nil receiver inside an interface, accepting filenames instead of io.reader, and how defer evaluates arguments and receivers. distilled from mistakes #42-47 of 100 go mistakes and how to avoid them. apply when designing golang functions, methods, signatures, and deferred calls.">
   <summary class="entry-row">
     <span class="entry-no">05</span>
     <span class="emoji">🛠</span>
@@ -7456,7 +7453,7 @@ defer func() {
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-functions-methods/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-error-handling" data-search="golang error handling — panicking instead of returning errors, ignoring when to wrap with %w, comparing error types with errors.as, comparing error values with errors.is, sentinel errors vs custom types, handling an error twice (log-and-return), not handling errors, and not handling defer errors. distilled from mistakes #48-54 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang error creation, wrapping, comparison, or handling." open>
+<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-error-handling" data-search="golang error handling — panicking instead of returning errors, ignoring when to wrap with %w, comparing error types with errors.as, comparing error values with errors.is, sentinel errors vs custom types, handling an error twice (log-and-return), not handling errors, and not handling defer errors. distilled from mistakes #48-54 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang error creation, wrapping, comparison, or handling.">
   <summary class="entry-row">
     <span class="entry-no">06</span>
     <span class="emoji">🚨</span>
@@ -7539,7 +7536,7 @@ _ = notify()
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-error-handling/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-concurrency-foundations" data-search="golang concurrency foundations — concurrency vs parallelism, thinking concurrency is always faster, channels vs mutexes, not understanding race problems (data race vs race condition), not understanding workload types (cpu vs i/o bound, gomaxprocs), and misunderstanding go contexts. distilled from mistakes #55-60 of 100 go mistakes and how to avoid them. apply when reasoning about basic golang concurrency, goroutines, and context usage." open>
+<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-concurrency-foundations" data-search="golang concurrency foundations — concurrency vs parallelism, thinking concurrency is always faster, channels vs mutexes, not understanding race problems (data race vs race condition), not understanding workload types (cpu vs i/o bound, gomaxprocs), and misunderstanding go contexts. distilled from mistakes #55-60 of 100 go mistakes and how to avoid them. apply when reasoning about basic golang concurrency, goroutines, and context usage.">
   <summary class="entry-row">
     <span class="entry-no">07</span>
     <span class="emoji">🔄</span>
@@ -7603,7 +7600,7 @@ Apply these rules when reasoning about basic Go concurrency.
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-concurrency-foundations/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-concurrency-practice" data-search="golang concurrency in practice — propagating an inappropriate context, starting a goroutine without knowing when to stop it, per-iteration loop variables, expecting deterministic select behavior, not using chan struct notification channels, not using nil channels, channel buffer size, string formatting side effects under lock, data races with append, mutex boundaries with slices and maps, misusing sync.waitgroup, forgetting sync.cond, not using errgroup, and copying sync types. distilled from mistakes #61-74 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang concurrent and async code." open>
+<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-concurrency-practice" data-search="golang concurrency in practice — propagating an inappropriate context, starting a goroutine without knowing when to stop it, per-iteration loop variables, expecting deterministic select behavior, not using chan struct notification channels, not using nil channels, channel buffer size, string formatting side effects under lock, data races with append, mutex boundaries with slices and maps, misusing sync.waitgroup, forgetting sync.cond, not using errgroup, and copying sync types. distilled from mistakes #61-74 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang concurrent and async code.">
   <summary class="entry-row">
     <span class="entry-no">08</span>
     <span class="emoji">🚦</span>
@@ -7726,7 +7723,7 @@ case v, open := &lt;-ch1:
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-concurrency-practice/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-standard-library" data-search="golang standard library — providing a wrong time.duration unit, time.after memory leaks, encoding/json common mistakes (embedding, monotonic clock, map[string]any numbers), database/sql connection handling and prepared statements, not closing transient io.closer resources, forgetting the return after http.error, and using the default http client and server without timeouts. distilled from mistakes #75-81 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang code using time, encoding/json, database/sql, io, or net/http." open>
+<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-standard-library" data-search="golang standard library — providing a wrong time.duration unit, time.after memory leaks, encoding/json common mistakes (embedding, monotonic clock, map[string]any numbers), database/sql connection handling and prepared statements, not closing transient io.closer resources, forgetting the return after http.error, and using the default http client and server without timeouts. distilled from mistakes #75-81 of 100 go mistakes and how to avoid them. apply when writing or reviewing golang code using time, encoding/json, database/sql, io, or net/http.">
   <summary class="entry-row">
     <span class="entry-no">09</span>
     <span class="emoji">📚</span>
@@ -7800,7 +7797,7 @@ if err := foo(req); err != nil {
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-standard-library/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-testing" data-search="golang testing and benchmarks — not categorizing tests, not enabling the race flag, not using execution modes (parallel/shuffle), not using table-driven tests, sleeping in unit tests, not dealing with the time api efficiently, not using httptest and iotest utilities, writing inaccurate benchmarks, and not exploring coverage, external test packages, and fuzzing. distilled from mistakes #82-90 plus the community fuzzing mistake of 100 go mistakes and how to avoid them. apply when writing or reviewing golang tests, benchmarks, or fuzz targets." open>
+<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-testing" data-search="golang testing and benchmarks — not categorizing tests, not enabling the race flag, not using execution modes (parallel/shuffle), not using table-driven tests, sleeping in unit tests, not dealing with the time api efficiently, not using httptest and iotest utilities, writing inaccurate benchmarks, and not exploring coverage, external test packages, and fuzzing. distilled from mistakes #82-90 plus the community fuzzing mistake of 100 go mistakes and how to avoid them. apply when writing or reviewing golang tests, benchmarks, or fuzz targets.">
   <summary class="entry-row">
     <span class="entry-no">10</span>
     <span class="emoji">🧪</span>
@@ -7908,7 +7905,7 @@ func BenchmarkPopcnt(b *testing.B) {
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-testing/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details>
-<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-optimizations" data-search="golang performance optimization — not understanding cpu caches and cache lines, false sharing in concurrent code, instruction-level parallelism, data alignment, stack vs heap allocation, how to reduce allocations, not relying on inlining, not using pprof and the execution tracer, not understanding how the gc works, and running go in docker/kubernetes. distilled from mistakes #91-100 of 100 go mistakes and how to avoid them. apply when optimizing, profiling, or reviewing golang code for performance." open>
+<details class="entry" data-category="Pitfalls (100 Go Mistakes)" data-name="golang-pitfalls-optimizations" data-search="golang performance optimization — not understanding cpu caches and cache lines, false sharing in concurrent code, instruction-level parallelism, data alignment, stack vs heap allocation, how to reduce allocations, not relying on inlining, not using pprof and the execution tracer, not understanding how the gc works, and running go in docker/kubernetes. distilled from mistakes #91-100 of 100 go mistakes and how to avoid them. apply when optimizing, profiling, or reviewing golang code for performance.">
   <summary class="entry-row">
     <span class="entry-no">11</span>
     <span class="emoji">🚀</span>
@@ -8011,7 +8008,6 @@ type T struct {
     <p class="src"><a href="https://github.com/fabianoflorentino/golang-agent-skills/blob/main/skills/golang-pitfalls-optimizations/SKILL.md" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
   </div>
 </details></div></section></div>
-    </div>
   </section>
   <section class="quickstart" id="install">
     <div class="container quickstart-band">
@@ -8064,11 +8060,15 @@ type T struct {
 </button>
 <script>
   const search = document.getElementById('search');
-  const chips = document.querySelectorAll('.rail-link');
+  const chips = document.querySelectorAll('.route-chip');
   const categories = document.querySelectorAll('.category');
   const toTop = document.getElementById('toTop');
   const header = document.getElementById('site-header');
   const resultCount = document.getElementById('result-count');
+  const resultLabel = document.getElementById('result-label');
+  const filters = document.getElementById('filters');
+  const guideBody = document.getElementById('catalog-body');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let activeFilter = 'All';
 
   function currentY() {
@@ -8099,9 +8099,24 @@ type T struct {
         if (show) { anyVisible = true; visible++; }
       });
       cat.style.display = anyVisible ? '' : 'none';
+      if (anyVisible && !reduceMotion) {
+        cat.classList.remove('fade-in');
+        void cat.offsetWidth;
+        cat.classList.add('fade-in');
+      }
     });
     resultCount.textContent = visible;
+    resultLabel.textContent = visible === 1 ? 'skill' : 'skills';
     updateChrome();
+  }
+
+  function revealResults() {
+    if (reduceMotion) return;
+    const visibleTop = header.offsetHeight + filters.offsetHeight + 16;
+    const top = guideBody.getBoundingClientRect().top;
+    if (top >= visibleTop && top <= window.innerHeight - 80) return;
+    const y = top + currentY() - visibleTop;
+    smoothScrollTo(y);
   }
 
   chips.forEach(chip => chip.addEventListener('click', () => {
@@ -8109,9 +8124,50 @@ type T struct {
     chip.classList.add('active');
     activeFilter = chip.dataset.filter;
     apply();
+    revealResults();
   }));
 
   search.addEventListener('input', apply);
+
+  document.querySelectorAll('details.entry').forEach(entry => {
+      const summary = entry.querySelector('summary.entry-row');
+      const body = entry.querySelector('.entry-body');
+      if (!summary || !body) return;
+      let animating = false;
+      summary.addEventListener('click', event => {
+        if (reduceMotion) return;
+        event.preventDefault();
+        if (animating) return;
+        animating = true;
+        if (entry.open) {
+          const finish = () => {
+            entry.open = false;
+            body.style.height = '';
+            animating = false;
+          };
+          const timer = setTimeout(finish, 380);
+          body.style.height = body.scrollHeight + 'px';
+          requestAnimationFrame(() => { body.style.height = '0px'; });
+          body.addEventListener('transitionend', () => {
+            clearTimeout(timer);
+            finish();
+          }, { once: true });
+        } else {
+          const finish = () => {
+            body.style.height = '';
+            animating = false;
+          };
+          const timer = setTimeout(finish, 380);
+          entry.open = true;
+          body.style.height = '0px';
+          requestAnimationFrame(() => { body.style.height = body.scrollHeight + 'px'; });
+          body.addEventListener('transitionend', () => {
+            clearTimeout(timer);
+            finish();
+          }, { once: true });
+        }
+      });
+  });
 
   document.querySelectorAll('[data-copy]').forEach(btn => {
     btn.addEventListener('click', async () => {

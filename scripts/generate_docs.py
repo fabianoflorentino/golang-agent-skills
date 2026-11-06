@@ -203,8 +203,7 @@ def render_skill_html(skill: str, data: dict, index: int) -> str:
     badge = " ".join(f"<span class='badge'>{html.escape(f)}</span>" for f in flags)
     meta = [f"v{version}" if version and version != "?" else "", author]
     meta_html = " &middot; ".join(html.escape(v) for v in meta if v)
-    detail_attrs = 'open' if name.startswith("golang-pitfalls") else ""
-    return f"""<details class="entry" data-category="{html.escape(CATEGORY_FOR.get(skill, 'Other'))}" data-name="{html.escape(skill)}" data-search="{html.escape(desc).lower()}" {detail_attrs}>
+    return f"""<details class="entry" data-category="{html.escape(CATEGORY_FOR.get(skill, 'Other'))}" data-name="{html.escape(skill)}" data-search="{html.escape(desc).lower()}">
   <summary class="entry-row">
     <span class="entry-no">{index:02d}</span>
     <span class="emoji">{html.escape(emoji)}</span>
@@ -277,7 +276,7 @@ def main() -> int:
 
     rail_items = [("All", total)] + [(cat, len(present)) for cat, present in present_categories]
     chips = "".join(
-        f'<button class="rail-link{" active" if c == "All" else ""}" data-filter="{html.escape(c)}">'
+        f'<button class="route-chip{" active" if c == "All" else ""}" data-filter="{html.escape(c)}">'
         f'<span>{html.escape(c)}</span><span class="rail-count">{n}</span></button>'
         for c, n in rail_items
     )
@@ -360,7 +359,7 @@ def main() -> int:
   /* Hero */
   .hero {{ position: relative; overflow: hidden; }}
   .hero::before {{ content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(56, 189, 248, .055) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, .055) 1px, transparent 1px); background-size: 64px 64px; -webkit-mask-image: radial-gradient(ellipse 72% 70% at 50% 42%, #000 20%, transparent 76%); mask-image: radial-gradient(ellipse 72% 70% at 50% 42%, #000 20%, transparent 76%); }}
-  .hero-inner {{ position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); gap: clamp(2rem, 5vw, 4.25rem); align-items: center; padding: clamp(2.75rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2rem) clamp(3rem, 6vw, 4.5rem); }}
+  .hero-inner {{ position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); gap: clamp(2rem, 5vw, 4.25rem); align-items: center; padding: clamp(2rem, 5vw, 3.75rem) clamp(1.25rem, 4vw, 2rem) clamp(2.25rem, 5vw, 3.5rem); }}
   .hero-copy > * {{ animation: fade-in-up .75s cubic-bezier(.2, .7, .2, 1) both; }}
   .hero-copy > *:nth-child(1) {{ animation-delay: .04s; }}
   .hero-copy > *:nth-child(2) {{ animation-delay: .1s; }}
@@ -383,7 +382,7 @@ def main() -> int:
   .hero-hint code {{ padding: .1em .35em; border-radius: 5px; background: var(--primary-dim); color: var(--primary); font-size: .9em; }}
 
   /* Route map */
-  .route-map {{ position: relative; width: 100%; max-width: 520px; aspect-ratio: 1 / 1; justify-self: end; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }}
+  .route-map {{ position: relative; width: 100%; max-width: 480px; aspect-ratio: 1 / 1; justify-self: end; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }}
   .route-map::before {{ content: ""; position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle, rgba(56, 189, 248, .1), transparent 62%); filter: blur(14px); }}
   .route-lines {{ position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }}
   .route-lines path {{ fill: none; stroke: url(#route-grad); stroke-width: .5; stroke-dasharray: 2.4 2.4; stroke-linecap: round; opacity: .55; animation: route-dash 22s linear infinite; }}
@@ -403,33 +402,35 @@ def main() -> int:
   .guide-head {{ max-width: 72ch; margin-bottom: 2rem; }}
   .guide-head h2, .quickstart-copy h2 {{ margin: 0 0 .45rem; font-size: clamp(1.7rem, 3vw, 2.25rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }}
   .guide-head p, .quickstart-copy p {{ margin: 0; color: var(--muted); font-size: .95rem; }}
-  .guide-shell {{ display: grid; grid-template-columns: minmax(210px, 250px) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }}
-  .rail {{ position: sticky; top: calc(var(--nav-h) + 1.5rem); align-self: start; display: flex; flex-direction: column; gap: 1.4rem; }}
-  .rail-label {{ display: block; margin: 0 0 .55rem; color: var(--muted-2); font-family: var(--mono); font-size: .6rem; letter-spacing: .16em; text-transform: uppercase; }}
-  input[type=search] {{ width: 100%; padding: .72rem .85rem; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--text); font: .82rem var(--sans); outline: none; transition: border-color .2s ease, box-shadow .2s ease; }}
+  .filter-card {{ position: sticky; top: calc(var(--nav-h) + .85rem); z-index: 8; display: grid; grid-template-columns: minmax(190px, 240px) minmax(0, 1fr) auto; gap: .9rem 1.25rem; align-items: end; margin-bottom: 2rem; padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius-lg); background: rgba(13, 18, 32, .92); box-shadow: 0 18px 44px rgba(0, 0, 0, .35); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }}
+  .filter-label {{ display: block; margin: 0 0 .5rem; color: var(--muted-2); font-family: var(--mono); font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; }}
+  input[type=search] {{ width: 100%; padding: .68rem .85rem; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--text); font: .82rem var(--sans); outline: none; transition: border-color .2s ease, box-shadow .2s ease; }}
   input[type=search]::placeholder {{ color: var(--muted-2); }}
   input[type=search]:focus {{ border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 229, 168, .12); }}
-  .rail-list {{ display: flex; flex-direction: column; gap: .15rem; }}
-  .rail-link {{ display: flex; align-items: center; justify-content: space-between; gap: .6rem; width: 100%; padding: .45rem .6rem; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--muted); font-size: .79rem; text-align: left; transition: background .2s ease, border-color .2s ease, color .2s ease; }}
-  .rail-link:hover {{ background: var(--surface-2); color: var(--text); }}
-  .rail-link.active {{ border-color: rgba(0, 229, 168, .35); background: var(--primary-dim); color: var(--primary); }}
-  .rail-count {{ flex-shrink: 0; color: var(--muted-2); font-family: var(--mono); font-size: .6rem; }}
-  .rail-link.active .rail-count {{ color: var(--primary); }}
-  .rail-note {{ margin: 0; color: var(--muted-2); font-family: var(--mono); font-size: .64rem; }}
-  .rail-note strong {{ color: var(--text); font-weight: 500; }}
+  .route-chips {{ display: flex; flex-wrap: wrap; gap: .35rem; }}
+  .route-chip {{ display: inline-flex; align-items: center; gap: .4rem; padding: .36rem .62rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-2); color: var(--muted); font-size: .72rem; white-space: nowrap; transition: border-color .2s ease, background .2s ease, color .2s ease; }}
+  .route-chip:hover {{ border-color: var(--border-2); color: var(--text); }}
+  .route-chip.active {{ border-color: rgba(0, 229, 168, .45); background: var(--primary-dim); color: var(--primary); }}
+  .rail-count {{ color: var(--muted-2); font-family: var(--mono); font-size: .55rem; }}
+  .route-chip.active .rail-count {{ color: var(--primary); }}
+  .filter-note {{ margin: 0; color: var(--muted-2); font-family: var(--mono); font-size: .62rem; white-space: nowrap; }}
+  .filter-note strong {{ color: var(--text); font-weight: 500; }}
   .guide-body {{ min-width: 0; }}
-  .category {{ margin: 0 0 2.5rem; scroll-margin-top: 6.5rem; }}
+  .category {{ margin: 0 0 2.5rem; scroll-margin-top: 11rem; }}
+  .category.fade-in {{ animation: fade-in-up .3s ease both; }}
   .category:last-child {{ margin-bottom: 0; }}
   .category-head {{ display: flex; align-items: baseline; gap: .7rem; padding-bottom: .55rem; border-bottom: 1px solid var(--border); }}
   .cat-index {{ color: var(--primary); font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; }}
   .category-head h2 {{ margin: 0; font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em; }}
   .category-head .count {{ margin-left: auto; color: var(--muted-2); font-family: var(--mono); font-size: .6rem; }}
   .entries {{ display: flex; flex-direction: column; }}
-  .entry {{ border-bottom: 1px solid var(--border); }}
+  .entry {{ border-bottom: 1px solid var(--border); border-radius: 12px; transition: background .2s ease, border-color .25s ease, box-shadow .25s ease, margin .25s ease; }}
   .entry:last-child {{ border-bottom: 0; }}
-  .entry-row {{ display: grid; grid-template-columns: 30px 36px minmax(0, 1fr) 22px; gap: .75rem; align-items: start; padding: .95rem .35rem; cursor: pointer; list-style: none; border-radius: 8px; transition: background .2s ease; }}
+  .entry[open] {{ margin: .45rem 0; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(17, 24, 39, .82), rgba(13, 18, 32, .94)); box-shadow: 0 18px 46px rgba(0, 0, 0, .32), 0 0 0 1px rgba(0, 229, 168, .05); }}
+  .entry-row {{ display: grid; grid-template-columns: 30px 36px minmax(0, 1fr) 22px; gap: .75rem; align-items: start; padding: .95rem .55rem; cursor: pointer; list-style: none; border-radius: 12px; transition: background .2s ease; }}
   .entry-row::-webkit-details-marker {{ display: none; }}
   .entry-row:hover {{ background: rgba(56, 189, 248, .045); }}
+  .entry[open] > .entry-row {{ border-bottom: 1px solid var(--border); border-radius: 12px 12px 0 0; }}
   .entry-no {{ padding-top: .42rem; color: var(--muted-2); font-family: var(--mono); font-size: .58rem; }}
   .emoji {{ display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-3); font-size: 16px; }}
   .entry-copy {{ display: flex; flex-direction: column; gap: .2rem; min-width: 0; }}
@@ -438,11 +439,11 @@ def main() -> int:
   .skill-meta {{ color: var(--muted-2); font-family: var(--mono); font-size: .58rem; }}
   .badge {{ padding: .15rem .4rem; border: 1px solid rgba(167, 139, 250, .32); border-radius: 5px; background: rgba(167, 139, 250, .12); color: var(--accent); font-family: var(--mono); font-size: .55rem; }}
   .desc {{ display: -webkit-box; overflow: hidden; margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }}
-  .chev {{ padding-top: .18rem; color: var(--muted-2); font-family: var(--mono); font-size: 1rem; line-height: 1; transition: transform .2s ease, color .2s ease; }}
+  .chev {{ padding-top: .18rem; color: var(--muted-2); font-family: var(--mono); font-size: 1rem; line-height: 1; transition: transform .25s ease, color .2s ease; }}
   .entry-row:hover .chev {{ color: var(--secondary); }}
-  details[open] > .entry-row .chev {{ color: var(--primary); transform: rotate(45deg); }}
-  details[open] .desc {{ display: block; overflow: visible; -webkit-line-clamp: unset; }}
-  .entry-body {{ padding: .1rem .35rem 1.3rem 4.1rem; }}
+  .entry[open] > .entry-row .chev {{ color: var(--primary); transform: rotate(45deg); }}
+  .entry[open] .desc {{ display: block; overflow: visible; -webkit-line-clamp: unset; }}
+  .entry-body {{ height: auto; overflow: hidden; padding: 0 .55rem 1.1rem 4.25rem; transition: height .28s cubic-bezier(.2, .7, .2, 1); }}
   .compat {{ color: var(--muted); font-size: .73rem; }}
   pre.body {{ margin-top: .8rem; padding: 1rem; max-height: 420px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); background: #070b13; color: var(--text-2); font-size: .72rem; line-height: 1.65; white-space: pre-wrap; }}
   .src {{ margin: .8rem 0 0; }}
@@ -490,22 +491,18 @@ def main() -> int:
 
   @media (max-width: 980px) {{
     .hero-inner {{ grid-template-columns: 1fr; }}
-    .route-map {{ justify-self: center; max-width: 470px; margin-top: .5rem; }}
-    .guide-shell {{ grid-template-columns: 1fr; gap: 1.5rem; }}
-    .rail {{ position: static; flex-direction: row; flex-wrap: wrap; align-items: flex-end; gap: 1.25rem; }}
-    .rail-block {{ flex: 1 1 220px; }}
-    .rail-block:last-of-type {{ flex-basis: 100%; }}
-    .rail-list {{ flex-direction: row; flex-wrap: wrap; }}
-    .rail-link {{ width: auto; }}
-    .rail-link .rail-count {{ margin-left: .35rem; }}
+    .route-map {{ justify-self: center; max-width: 460px; margin-top: .5rem; }}
+    .filter-card {{ position: static; grid-template-columns: 1fr 1fr; }}
+    .filter-note {{ grid-column: 1 / -1; }}
     .nav-links {{ display: none; }}
     .quickstart-band {{ grid-template-columns: 1fr; }}
   }}
   @media (max-width: 640px) {{
     .nav-cta {{ display: none; }}
     .nav-logo {{ font-size: .85rem; }}
-    .entry-row {{ grid-template-columns: 24px 32px minmax(0, 1fr) 18px; gap: .55rem; }}
-    .entry-body {{ padding-left: .35rem; }}
+    .filter-card {{ grid-template-columns: 1fr; }}
+    .entry-row {{ grid-template-columns: 24px 32px minmax(0, 1fr) 18px; gap: .55rem; padding: .9rem .3rem; }}
+    .entry-body {{ padding-left: .55rem; }}
     .hero-facts li {{ padding-right: .8rem; margin-right: .8rem; }}
     .footer-inner {{ flex-direction: column; align-items: flex-start; }}
   }}
@@ -582,20 +579,18 @@ def main() -> int:
       <h2>Every skill, one shelf.</h2>
       <p>A dense, searchable index of the whole pack. Filter by route, then open any entry to read the full skill.</p>
     </div>
-    <div class="guide-shell">
-      <aside class="rail" aria-label="Catalog filters">
-        <div class="rail-block">
-          <label class="rail-label" for="search">Search</label>
-          <input type="search" id="search" placeholder="name or description..." autocomplete="off">
-        </div>
-        <div class="rail-block">
-          <p class="rail-label">Routes</p>
-          <div class="rail-list" id="chips">{chips}</div>
-        </div>
-        <p class="rail-note"><strong id="result-count">{total}</strong> skills in view</p>
-      </aside>
-      <div class="guide-body" id="catalog-body">{"\n".join(sections)}</div>
+    <div class="filter-card" id="filters">
+      <div class="filter-search">
+        <label class="filter-label" for="search">Search</label>
+        <input type="search" id="search" placeholder="name or description..." autocomplete="off">
+      </div>
+      <div class="filter-routes">
+        <p class="filter-label">Routes</p>
+        <div class="route-chips" id="chips">{chips}</div>
+      </div>
+      <p class="filter-note"><strong id="result-count">{total}</strong> <span id="result-label">skills</span> in view</p>
     </div>
+    <div class="guide-body" id="catalog-body">{"\n".join(sections)}</div>
   </section>
   <section class="quickstart" id="install">
     <div class="container quickstart-band">
@@ -637,11 +632,15 @@ def main() -> int:
 </button>
 <script>
   const search = document.getElementById('search');
-  const chips = document.querySelectorAll('.rail-link');
+  const chips = document.querySelectorAll('.route-chip');
   const categories = document.querySelectorAll('.category');
   const toTop = document.getElementById('toTop');
   const header = document.getElementById('site-header');
   const resultCount = document.getElementById('result-count');
+  const resultLabel = document.getElementById('result-label');
+  const filters = document.getElementById('filters');
+  const guideBody = document.getElementById('catalog-body');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let activeFilter = 'All';
 
   function currentY() {{
@@ -672,9 +671,24 @@ def main() -> int:
         if (show) {{ anyVisible = true; visible++; }}
       }});
       cat.style.display = anyVisible ? '' : 'none';
+      if (anyVisible && !reduceMotion) {{
+        cat.classList.remove('fade-in');
+        void cat.offsetWidth;
+        cat.classList.add('fade-in');
+      }}
     }});
     resultCount.textContent = visible;
+    resultLabel.textContent = visible === 1 ? 'skill' : 'skills';
     updateChrome();
+  }}
+
+  function revealResults() {{
+    if (reduceMotion) return;
+    const visibleTop = header.offsetHeight + filters.offsetHeight + 16;
+    const top = guideBody.getBoundingClientRect().top;
+    if (top >= visibleTop && top <= window.innerHeight - 80) return;
+    const y = top + currentY() - visibleTop;
+    smoothScrollTo(y);
   }}
 
   chips.forEach(chip => chip.addEventListener('click', () => {{
@@ -682,9 +696,50 @@ def main() -> int:
     chip.classList.add('active');
     activeFilter = chip.dataset.filter;
     apply();
+    revealResults();
   }}));
 
   search.addEventListener('input', apply);
+
+  document.querySelectorAll('details.entry').forEach(entry => {{
+      const summary = entry.querySelector('summary.entry-row');
+      const body = entry.querySelector('.entry-body');
+      if (!summary || !body) return;
+      let animating = false;
+      summary.addEventListener('click', event => {{
+        if (reduceMotion) return;
+        event.preventDefault();
+        if (animating) return;
+        animating = true;
+        if (entry.open) {{
+          const finish = () => {{
+            entry.open = false;
+            body.style.height = '';
+            animating = false;
+          }};
+          const timer = setTimeout(finish, 380);
+          body.style.height = body.scrollHeight + 'px';
+          requestAnimationFrame(() => {{ body.style.height = '0px'; }});
+          body.addEventListener('transitionend', () => {{
+            clearTimeout(timer);
+            finish();
+          }}, {{ once: true }});
+        }} else {{
+          const finish = () => {{
+            body.style.height = '';
+            animating = false;
+          }};
+          const timer = setTimeout(finish, 380);
+          entry.open = true;
+          body.style.height = '0px';
+          requestAnimationFrame(() => {{ body.style.height = body.scrollHeight + 'px'; }});
+          body.addEventListener('transitionend', () => {{
+            clearTimeout(timer);
+            finish();
+          }}, {{ once: true }});
+        }}
+      }});
+  }});
 
   document.querySelectorAll('[data-copy]').forEach(btn => {{
     btn.addEventListener('click', async () => {{
