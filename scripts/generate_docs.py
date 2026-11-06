@@ -266,7 +266,7 @@ def main() -> int:
 
     category_counts = {cat: len(present) for cat, present in present_categories}
     deck_cards = []
-    for i, skill in enumerate(DECK_SKILLS):
+    for skill in DECK_SKILLS:
         if skill not in parsed:
             continue
         cat = CATEGORY_FOR.get(skill, "Other")
@@ -274,7 +274,7 @@ def main() -> int:
         count = category_counts.get(cat, 0)
         label = f"{count} skill" + ("" if count == 1 else "s")
         deck_cards.append(
-            f'<button class="deck-card" type="button" data-filter="{html.escape(cat)}" aria-pressed="false" title="Filter {html.escape(cat)} skills" style="--i:{i}">'
+            f'<button class="deck-card" type="button" data-filter="{html.escape(cat)}" aria-pressed="false" title="Filter {html.escape(cat)} skills">'
             f'<span class="deck-emoji">{html.escape(emoji)}</span>'
             f'<span class="deck-name">{html.escape(skill)}</span>'
             f'<span class="deck-cat">{html.escape(cat)}</span>'
@@ -423,9 +423,11 @@ def main() -> int:
   .deck-gateway-copy code {{ color: var(--primary); font-family: var(--mono); font-size: .82rem; font-weight: 600; }}
   .deck-gateway-copy small {{ color: var(--muted); font-size: .64rem; }}
   .deck-pulse {{ position: absolute; top: 1.05rem; right: 1.05rem; width: 7px; height: 7px; border-radius: 50%; background: var(--primary); animation: gateway-pulse 2.4s ease-out infinite; }}
-  .deck-cards {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; perspective: 900px; }}
-  .deck-card {{ position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: .18rem; min-height: 118px; padding: .8rem .85rem; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(180deg, rgba(17, 24, 39, .9), rgba(13, 18, 32, .96)); color: var(--text); text-align: left; transform: rotate(calc((var(--i) - 2.5) * 1.05deg)); animation: deal .55s cubic-bezier(.2, .7, .2, 1) backwards; animation-delay: calc(var(--i) * 80ms + .35s); transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease; }}
-  .deck-card:hover, .deck-card:focus-visible {{ z-index: 1; border-color: rgba(0, 229, 168, .45); background: linear-gradient(180deg, rgba(17, 24, 39, .96), rgba(13, 18, 32, .98)); box-shadow: 0 16px 38px rgba(0, 0, 0, .42), 0 0 24px rgba(0, 229, 168, .08); transform: translateY(-4px) rotate(0); }}
+  .deck-carousel {{ overflow: hidden; border-radius: 14px; }}
+  .deck-track {{ display: flex; gap: .6rem; overflow-x: auto; padding: .1rem .1rem .35rem; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }}
+  .deck-track::-webkit-scrollbar {{ display: none; }}
+  .deck-card {{ position: relative; display: flex; flex: 0 0 calc(50% - .3rem); flex-direction: column; align-items: flex-start; gap: .18rem; min-height: 128px; padding: .85rem .9rem; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(180deg, rgba(17, 24, 39, .9), rgba(13, 18, 32, .96)); color: var(--text); text-align: left; scroll-snap-align: start; transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease; }}
+  .deck-card:hover, .deck-card:focus-visible {{ z-index: 1; border-color: rgba(0, 229, 168, .45); background: linear-gradient(180deg, rgba(17, 24, 39, .96), rgba(13, 18, 32, .98)); box-shadow: 0 16px 38px rgba(0, 0, 0, .42), 0 0 24px rgba(0, 229, 168, .08); transform: translateY(-3px); }}
   .deck-card.active {{ border-color: rgba(0, 229, 168, .6); background: linear-gradient(180deg, rgba(0, 229, 168, .1), rgba(13, 18, 32, .96)); }}
   .deck-emoji {{ display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin-bottom: .15rem; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-3); font-size: 15px; }}
   .deck-name {{ color: var(--primary); font-family: var(--mono); font-size: .66rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }}
@@ -433,7 +435,15 @@ def main() -> int:
   .deck-count {{ margin-top: auto; padding-top: .25rem; color: var(--muted-2); font-family: var(--mono); font-size: .52rem; letter-spacing: .08em; text-transform: uppercase; }}
   .deck-card::after {{ content: "→"; position: absolute; right: .7rem; bottom: .65rem; color: var(--muted-2); font-family: var(--mono); font-size: .65rem; transition: color .2s ease, transform .2s ease; }}
   .deck-card:hover::after, .deck-card:focus-visible::after {{ color: var(--primary); transform: translateX(2px); }}
-  .deck-hint {{ margin: 0; color: var(--muted-2); font-family: var(--mono); font-size: .56rem; letter-spacing: .08em; text-align: right; text-transform: uppercase; }}
+  .deck-footer {{ display: flex; align-items: center; justify-content: space-between; gap: .75rem; }}
+  .deck-hint {{ margin: 0; color: var(--muted-2); font-family: var(--mono); font-size: .56rem; letter-spacing: .08em; text-align: left; text-transform: uppercase; }}
+  .deck-controls {{ display: flex; align-items: center; gap: .45rem; }}
+  .deck-nav {{ display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text-2); font-family: var(--mono); font-size: 1rem; line-height: 1; transition: border-color .2s ease, color .2s ease, opacity .2s ease; }}
+  .deck-nav:hover:not(:disabled) {{ border-color: var(--primary); color: var(--primary); }}
+  .deck-nav:disabled {{ opacity: .35; cursor: default; }}
+  .deck-dots {{ display: flex; align-items: center; gap: .3rem; }}
+  .deck-dot {{ width: 6px; height: 6px; padding: 0; border: 0; border-radius: 50%; background: var(--border-2); transition: background .2s ease, transform .2s ease; }}
+  .deck-dot.active {{ background: var(--primary); transform: scale(1.25); }}
 
   /* Guide / index */
   .guide {{ padding: clamp(2.75rem, 5vw, 4.5rem) clamp(1.25rem, 4vw, 2rem) 4.5rem; }}
@@ -521,7 +531,6 @@ def main() -> int:
   @keyframes fade-in-up {{ from {{ opacity: 0; transform: translateY(24px); }} to {{ opacity: 1; transform: translateY(0); }} }}
   @keyframes fade-in-right {{ from {{ opacity: 0; transform: translateX(34px); }} to {{ opacity: 1; transform: translateX(0); }} }}
   @keyframes aurora-drift {{ from {{ transform: translate3d(-3%, -2%, 0) scale(1); }} to {{ transform: translate3d(4%, 3%, 0) scale(1.08); }} }}
-  @keyframes deal {{ from {{ opacity: 0; transform: translateY(-18px) scale(.94); }} }}
   @keyframes gateway-pulse {{ 0%, 100% {{ box-shadow: 0 0 0 0 rgba(0, 229, 168, .55); }} 50% {{ box-shadow: 0 0 0 7px rgba(0, 229, 168, 0); }} }}
   @media (prefers-reduced-motion: reduce) {{
     *, *::before, *::after {{ animation: none !important; transition: none !important; }}
@@ -539,6 +548,7 @@ def main() -> int:
     .nav-cta {{ display: none; }}
     .nav-logo {{ font-size: .85rem; }}
     .filter-card {{ grid-template-columns: 1fr; }}
+    .deck-card {{ flex-basis: 84%; }}
     .entry-row {{ grid-template-columns: 24px 32px minmax(0, 1fr) 18px; gap: .55rem; padding: .9rem .3rem; }}
     .entry-body {{ padding-left: .55rem; }}
     .hero-facts li {{ padding-right: .8rem; margin-right: .8rem; }}
@@ -596,8 +606,17 @@ def main() -> int:
           </span>
           <span class="deck-pulse" aria-hidden="true"></span>
         </div>
-        <div class="deck-cards">{deck_html}</div>
-        <p class="deck-hint">Pick a card to filter the index</p>
+        <div class="deck-carousel">
+          <div class="deck-track" id="deck-track">{deck_html}</div>
+        </div>
+        <div class="deck-footer">
+          <p class="deck-hint">Click a card to filter the index</p>
+          <div class="deck-controls">
+            <button class="deck-nav prev" type="button" aria-label="Previous skills" disabled>‹</button>
+            <div class="deck-dots" id="deck-dots"></div>
+            <button class="deck-nav next" type="button" aria-label="Next skills">›</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -817,6 +836,53 @@ def main() -> int:
       if (chip) chip.click();
     }});
   }});
+
+  const deckTrack = document.getElementById('deck-track');
+  const deckDots = document.getElementById('deck-dots');
+  const deckPrev = document.querySelector('.deck-nav.prev');
+  const deckNext = document.querySelector('.deck-nav.next');
+
+  function deckMetrics() {{
+    const card = deckTrack ? deckTrack.querySelector('.deck-card') : null;
+    if (!deckTrack || !card) return {{ perView: 1, step: 1, pages: 1 }};
+    const gap = parseFloat(getComputedStyle(deckTrack).columnGap) || 0;
+    const size = card.getBoundingClientRect().width + gap;
+    const perView = Math.max(1, Math.round(deckTrack.clientWidth / size));
+    const count = deckTrack.querySelectorAll('.deck-card').length;
+    return {{ perView, step: perView * size, pages: Math.max(1, Math.ceil(count / perView)) }};
+  }}
+
+  function updateDeckUI() {{
+    if (!deckTrack) return;
+    const {{ step, pages }} = deckMetrics();
+    if (deckDots && deckDots.children.length !== pages) {{
+      deckDots.innerHTML = '';
+      for (let i = 0; i < pages; i++) {{
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'deck-dot';
+        dot.setAttribute('aria-label', 'Go to skill group ' + (i + 1));
+        dot.addEventListener('click', () => {{
+          deckTrack.scrollTo({{ left: i * step, behavior: 'smooth' }});
+        }});
+        deckDots.appendChild(dot);
+      }}
+    }}
+    const active = Math.min(pages - 1, Math.round(deckTrack.scrollLeft / step));
+    if (deckDots) {{
+      [...deckDots.children].forEach((dot, i) => dot.classList.toggle('active', i === active));
+    }}
+    if (deckPrev) deckPrev.disabled = deckTrack.scrollLeft <= 2;
+    if (deckNext) deckNext.disabled = deckTrack.scrollLeft >= deckTrack.scrollWidth - deckTrack.clientWidth - 2;
+  }}
+
+  if (deckTrack) {{
+    if (deckPrev) deckPrev.addEventListener('click', () => deckTrack.scrollBy({{ left: -deckMetrics().step, behavior: 'smooth' }}));
+    if (deckNext) deckNext.addEventListener('click', () => deckTrack.scrollBy({{ left: deckMetrics().step, behavior: 'smooth' }}));
+    deckTrack.addEventListener('scroll', updateDeckUI, {{ passive: true }});
+    window.addEventListener('resize', updateDeckUI);
+    updateDeckUI();
+  }}
 
   search.addEventListener('input', apply);
 
