@@ -104,30 +104,26 @@
   .hero-hint { margin: .85rem 0 0; color: var(--muted-2); font-size: .76rem; }
   .hero-hint code { padding: .1em .35em; border-radius: 5px; background: var(--primary-dim); color: var(--primary); font-size: .9em; }
 
-  /* Route map */
-  .route-map { position: relative; width: 100%; max-width: 480px; aspect-ratio: 1 / 1; justify-self: end; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }
-  .route-map::before { content: ""; position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle, rgba(56, 189, 248, .1), transparent 62%); filter: blur(14px); }
-  .route-map::after { content: ""; position: absolute; top: 50%; left: 50%; width: 64px; height: 64px; border: 1px solid rgba(0, 229, 168, .3); border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); animation: map-ping 3.6s ease-out infinite; }
-  .route-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-  .route-lines path { fill: none; stroke: url(#route-grad); stroke-width: .42; stroke-dasharray: 1.6 2.4; stroke-linecap: round; opacity: .42; }
-  .route-node { position: absolute; transform: translate(-50%, -50%); padding: .42rem .72rem; border: 1px solid var(--border); border-radius: 999px; background: rgba(13, 18, 32, .94); color: var(--text-2); font-family: var(--mono); font-size: .62rem; white-space: nowrap; box-shadow: 0 10px 28px rgba(0, 0, 0, .4); }
-  .route-node.n1 { left: 16%; top: 22%; }
-  .route-node.n2 { left: 84%; top: 20%; }
-  .route-node.n3 { left: 12%; top: 80%; }
-  .route-node.n4 { left: 88%; top: 78%; }
-  .route-node.n5 { left: 50%; top: 8%; }
-  .route-node.n6 { left: 50%; top: 92%; }
-  .route-center { left: 50%; top: 50%; z-index: 2; padding: .6rem 1rem; border-color: rgba(0, 229, 168, .55); color: var(--primary); font-size: .7rem; box-shadow: 0 0 0 7px rgba(0, 229, 168, .05), 0 0 34px rgba(0, 229, 168, .28); animation: none; }
-  .route-center em { display: block; margin-top: .1rem; color: var(--muted-2); font-family: var(--mono); font-size: .48rem; font-style: normal; letter-spacing: .18em; text-align: center; text-transform: uppercase; }
-  .route-center::before { content: ""; position: absolute; inset: -11px; border: 1px solid rgba(0, 229, 168, .28); border-radius: 999px; animation: route-pulse 3.2s ease-out infinite; }
-  .route-orbit { fill: none; stroke: rgba(56, 189, 248, .18); stroke-width: .3; stroke-dasharray: 1 2.8; transform-box: view-box; transform-origin: 50% 50%; animation: route-spin 70s linear infinite; }
-  .route-node { transition: border-color .25s ease, color .25s ease, box-shadow .25s ease; }
-  .route-node.hit { border-color: rgba(0, 229, 168, .7); color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 229, 168, .07), 0 0 26px rgba(0, 229, 168, .4); }
-  .route-status { position: absolute; top: 0; left: 0; display: inline-flex; align-items: center; gap: .35rem; padding: .28rem .55rem; border: 1px solid var(--border); border-radius: 999px; background: rgba(13, 18, 32, .9); color: var(--muted-2); font-family: var(--mono); font-size: .52rem; letter-spacing: .12em; text-transform: uppercase; }
-  .route-status i { width: 5px; height: 5px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 8px rgba(0, 229, 168, .9); animation: route-pulse 2.2s ease-out infinite; }
-  .route-pulses { opacity: 0; transition: opacity .5s ease; }
-  .pulses-ready .route-pulses { opacity: 1; }
-  .route-pulse { fill: #6bffd6; filter: drop-shadow(0 0 2px rgba(107, 255, 214, .9)); }
+  /* Skill deck */
+  .skill-deck { position: relative; display: flex; flex-direction: column; gap: .9rem; justify-self: end; width: 100%; max-width: 520px; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }
+  .deck-gateway { position: relative; display: flex; align-items: center; gap: .8rem; overflow: hidden; padding: .85rem 1rem; border: 1px solid rgba(0, 229, 168, .35); border-radius: 14px; background: linear-gradient(135deg, rgba(0, 229, 168, .11), rgba(56, 189, 248, .06)); box-shadow: 0 18px 44px rgba(0, 0, 0, .35), 0 0 0 1px rgba(0, 229, 168, .04); }
+  .deck-gateway::after { content: ""; position: absolute; right: 0; bottom: 0; left: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0, 229, 168, .6), transparent); }
+  .deck-gateway .deck-emoji { width: 38px; height: 38px; font-size: 18px; }
+  .deck-gateway-copy { display: flex; flex-direction: column; gap: .12rem; min-width: 0; }
+  .deck-gateway-copy code { color: var(--primary); font-family: var(--mono); font-size: .82rem; font-weight: 600; }
+  .deck-gateway-copy small { color: var(--muted); font-size: .64rem; }
+  .deck-pulse { position: absolute; top: 1.05rem; right: 1.05rem; width: 7px; height: 7px; border-radius: 50%; background: var(--primary); animation: gateway-pulse 2.4s ease-out infinite; }
+  .deck-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; perspective: 900px; }
+  .deck-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: .18rem; min-height: 118px; padding: .8rem .85rem; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(180deg, rgba(17, 24, 39, .9), rgba(13, 18, 32, .96)); color: var(--text); text-align: left; transform: rotate(calc((var(--i) - 2.5) * 1.05deg)); animation: deal .55s cubic-bezier(.2, .7, .2, 1) backwards; animation-delay: calc(var(--i) * 80ms + .35s); transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease; }
+  .deck-card:hover, .deck-card:focus-visible { z-index: 1; border-color: rgba(0, 229, 168, .45); background: linear-gradient(180deg, rgba(17, 24, 39, .96), rgba(13, 18, 32, .98)); box-shadow: 0 16px 38px rgba(0, 0, 0, .42), 0 0 24px rgba(0, 229, 168, .08); transform: translateY(-4px) rotate(0); }
+  .deck-card.active { border-color: rgba(0, 229, 168, .6); background: linear-gradient(180deg, rgba(0, 229, 168, .1), rgba(13, 18, 32, .96)); }
+  .deck-emoji { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin-bottom: .15rem; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-3); font-size: 15px; }
+  .deck-name { color: var(--primary); font-family: var(--mono); font-size: .66rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+  .deck-cat { color: var(--muted); font-size: .6rem; line-height: 1.3; }
+  .deck-count { margin-top: auto; padding-top: .25rem; color: var(--muted-2); font-family: var(--mono); font-size: .52rem; letter-spacing: .08em; text-transform: uppercase; }
+  .deck-card::after { content: "→"; position: absolute; right: .7rem; bottom: .65rem; color: var(--muted-2); font-family: var(--mono); font-size: .65rem; transition: color .2s ease, transform .2s ease; }
+  .deck-card:hover::after, .deck-card:focus-visible::after { color: var(--primary); transform: translateX(2px); }
+  .deck-hint { margin: 0; color: var(--muted-2); font-family: var(--mono); font-size: .56rem; letter-spacing: .08em; text-align: right; text-transform: uppercase; }
 
   /* Guide / index */
   .guide { padding: clamp(2.75rem, 5vw, 4.5rem) clamp(1.25rem, 4vw, 2rem) 4.5rem; }
@@ -214,17 +210,16 @@
 
   @keyframes fade-in-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fade-in-right { from { opacity: 0; transform: translateX(34px); } to { opacity: 1; transform: translateX(0); } }
-  @keyframes route-spin { to { transform: rotate(360deg); } }
   @keyframes aurora-drift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(4%, 3%, 0) scale(1.08); } }
-  @keyframes map-ping { 0% { opacity: .55; transform: translate(-50%, -50%) scale(.35); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(5.2); } }
-  @keyframes route-pulse { 0% { opacity: .8; transform: scale(.86); } 70%, 100% { opacity: 0; transform: scale(1.22); } }
+  @keyframes deal { from { opacity: 0; transform: translateY(-18px) scale(.94); } }
+  @keyframes gateway-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0, 229, 168, .55); } 50% { box-shadow: 0 0 0 7px rgba(0, 229, 168, 0); } }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
   }
 
   @media (max-width: 980px) {
     .hero-inner { grid-template-columns: 1fr; }
-    .route-map { justify-self: center; max-width: 460px; margin-top: .5rem; }
+    .skill-deck { justify-self: center; max-width: 460px; margin-top: .5rem; }
     .filter-card { position: static; grid-template-columns: 1fr 1fr; }
     .filter-note { grid-column: 1 / -1; }
     .nav-links { display: none; }
@@ -297,39 +292,17 @@
         </ul>
         <p class="hero-hint">Start with <code>golang-how-to</code> &mdash; the gateway that routes every task to the right skills.</p>
       </div>
-      <div class="route-map" aria-hidden="true">
-        <svg class="route-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="route-grad" x1="0" y1="0" x2="1" y2="1">
-              <stop stop-color="#00e5a8"/>
-              <stop offset=".5" stop-color="#38bdf8"/>
-              <stop offset="1" stop-color="#a78bfa"/>
-            </linearGradient>
-          </defs>
-          <circle class="route-orbit" cx="50" cy="50" r="31"/>
-          <path id="route-p1" d="M50 50 C 36 38 26 30 16 22"/>
-          <path id="route-p2" d="M50 50 C 64 38 74 30 84 20"/>
-          <path id="route-p3" d="M50 50 C 38 62 26 70 12 80"/>
-          <path id="route-p4" d="M50 50 C 62 62 76 70 88 78"/>
-          <path id="route-p5" d="M50 50 C 50 34 50 22 50 8"/>
-          <path id="route-p6" d="M50 50 C 50 66 50 78 50 92"/>
-          <g class="route-pulses">
-            <circle class="route-pulse" r="1.6" data-path="route-p1" data-target="n1" data-dur="3400" data-offset="0"/>
-            <circle class="route-pulse" r="1.6" data-path="route-p2" data-target="n2" data-dur="3800" data-offset="0.16"/>
-            <circle class="route-pulse" r="1.6" data-path="route-p3" data-target="n3" data-dur="4200" data-offset="0.32"/>
-            <circle class="route-pulse" r="1.6" data-path="route-p4" data-target="n4" data-dur="3600" data-offset="0.48"/>
-            <circle class="route-pulse" r="1.6" data-path="route-p5" data-target="n5" data-dur="4000" data-offset="0.64"/>
-            <circle class="route-pulse" r="1.6" data-path="route-p6" data-target="n6" data-dur="3200" data-offset="0.8"/>
-          </g>
-        </svg>
-        <span class="route-status"><i aria-hidden="true"></i> live routing</span>
-        <span class="route-node route-center">golang-how-to<em>gateway</em></span>
-        <span class="route-node n1">concurrency</span>
-        <span class="route-node n2">security</span>
-        <span class="route-node n3">testing</span>
-        <span class="route-node n4">performance</span>
-        <span class="route-node n5">APIs</span>
-        <span class="route-node n6">pitfalls</span>
+      <div class="skill-deck" aria-label="Skill groups">
+        <div class="deck-gateway">
+          <span class="deck-emoji">🧭</span>
+          <span class="deck-gateway-copy">
+            <code>golang-how-to</code>
+            <small>gateway &middot; routes tasks to the right skills</small>
+          </span>
+          <span class="deck-pulse" aria-hidden="true"></span>
+        </div>
+        <div class="deck-cards"><button class="deck-card" type="button" data-filter="Code Quality" aria-pressed="false" title="Filter Code Quality skills" style="--i:0"><span class="deck-emoji">🔒</span><span class="deck-name">golang-security</span><span class="deck-cat">Code Quality</span><span class="deck-count">8 skills</span></button><button class="deck-card" type="button" data-filter="Architecture &amp; Design" aria-pressed="false" title="Filter Architecture &amp; Design skills" style="--i:1"><span class="deck-emoji">⚡</span><span class="deck-name">golang-concurrency</span><span class="deck-cat">Architecture &amp; Design</span><span class="deck-count">8 skills</span></button><button class="deck-card" type="button" data-filter="QA &amp; Performance" aria-pressed="false" title="Filter QA &amp; Performance skills" style="--i:2"><span class="deck-emoji">🧪</span><span class="deck-name">golang-testing</span><span class="deck-cat">QA &amp; Performance</span><span class="deck-count">5 skills</span></button><button class="deck-card" type="button" data-filter="Project Setup" aria-pressed="false" title="Filter Project Setup skills" style="--i:3"><span class="deck-emoji">📁</span><span class="deck-name">golang-project-layout</span><span class="deck-cat">Project Setup</span><span class="deck-count">8 skills</span></button><button class="deck-card" type="button" data-filter="APIs" aria-pressed="false" title="Filter APIs skills" style="--i:4"><span class="deck-emoji">🌐</span><span class="deck-name">golang-rest</span><span class="deck-cat">APIs</span><span class="deck-count">4 skills</span></button><button class="deck-card" type="button" data-filter="Pitfalls (100 Go Mistakes)" aria-pressed="false" title="Filter Pitfalls (100 Go Mistakes) skills" style="--i:5"><span class="deck-emoji">🚨</span><span class="deck-name">golang-pitfalls-error-handling</span><span class="deck-cat">Pitfalls (100 Go Mistakes)</span><span class="deck-count">11 skills</span></button></div>
+        <p class="deck-hint">Pick a card to filter the index</p>
       </div>
     </div>
   </section>
@@ -8162,51 +8135,6 @@ type T struct {
     requestAnimationFrame(frame);
   })();
 
-  (function routePulses() {
-    const circles = document.querySelectorAll('.route-pulse');
-    if (!circles.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const items = [];
-    circles.forEach(circle => {
-      const path = document.getElementById(circle.dataset.path);
-      if (!path) return;
-      items.push({
-        circle,
-        path,
-        target: circle.dataset.target ? document.querySelector('.route-node.' + circle.dataset.target) : null,
-        length: path.getTotalLength(),
-        dur: Number(circle.dataset.dur) || 3600,
-        offset: Number(circle.dataset.offset) || 0,
-        prev: null
-      });
-    });
-    if (!items.length) return;
-    for (const item of items) {
-      const t = item.offset % 1;
-      const point = item.path.getPointAtLength(t * item.length);
-      item.circle.setAttribute('cx', point.x);
-      item.circle.setAttribute('cy', point.y);
-      item.prev = t;
-    }
-    document.documentElement.classList.add('pulses-ready');
-    let start = null;
-    function tick(now) {
-      if (start === null) start = now;
-      for (const item of items) {
-        const t = (((now - start) / item.dur) + item.offset) % 1;
-        const point = item.path.getPointAtLength(t * item.length);
-        item.circle.setAttribute('cx', point.x);
-        item.circle.setAttribute('cy', point.y);
-        item.circle.style.opacity = (0.4 + 0.6 * Math.sin(t * Math.PI)).toFixed(2);
-        if (item.target && t < item.prev) {
-          item.target.classList.add('hit');
-          setTimeout(() => item.target.classList.remove('hit'), 420);
-        }
-        item.prev = t;
-      }
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  })();
 
   const search = document.getElementById('search');
   const chips = document.querySelectorAll('.route-chip');
@@ -8268,13 +8196,28 @@ type T struct {
     smoothScrollTo(y);
   }
 
+  function syncDeck(filter) {
+    document.querySelectorAll('.deck-card').forEach(card => {
+      card.classList.toggle('active', card.dataset.filter === filter);
+      card.setAttribute('aria-pressed', String(card.classList.contains('active')));
+    });
+  }
+
   chips.forEach(chip => chip.addEventListener('click', () => {
     chips.forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
     activeFilter = chip.dataset.filter;
+    syncDeck(activeFilter);
     apply();
     revealResults();
   }));
+
+  document.querySelectorAll('.deck-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const chip = [...chips].find(c => c.dataset.filter === card.dataset.filter);
+      if (chip) chip.click();
+    });
+  });
 
   search.addEventListener('input', apply);
 
