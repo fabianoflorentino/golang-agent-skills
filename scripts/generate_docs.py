@@ -618,7 +618,7 @@ def main() -> int:
       <div class="mind-map" aria-label="Agent skill map">
         <svg class="mind-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
           <defs>
-            <linearGradient id="mind-grad" x1="0" y1="0" x2="1" y2="1">
+            <linearGradient id="mind-grad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
               <stop stop-color="#00e5a8"/>
               <stop offset=".5" stop-color="#38bdf8"/>
               <stop offset="1" stop-color="#a78bfa"/>
@@ -627,7 +627,7 @@ def main() -> int:
           <path id="mind-p1" pathLength="100" d="M50 50 C 50 34 50 22 50 10"/>
           <path id="mind-p2" pathLength="100" d="M50 50 C 64 42 78 34 88 27"/>
           <path id="mind-p3" pathLength="100" d="M50 50 C 64 58 78 66 88 73"/>
-          <path id="mind-p4" pathLength="100" d="M50 50 C 50 66 50 78 50 90"/>
+          <path id="mind-p4" pathLength="100" d="M50 50 C 66 64 62 80 50 90"/>
           <path id="mind-p5" pathLength="100" d="M50 50 C 36 58 22 66 12 73"/>
           <path id="mind-p6" pathLength="100" d="M50 50 C 36 42 22 34 12 27"/>
           <g class="mind-pulses">
