@@ -106,6 +106,38 @@ def parse_frontmatter(text: str) -> dict:
                 i += 1
             data[path] = " ".join(collected)
             continue
+        if val[:1] in ("'", '"') and not (len(val) > 1 and val[-1] == val[0]):
+            quote = val[0]
+            collected = [val[1:]]
+            i += 1
+            while i < len(lines):
+                chunk = lines[i].strip()
+                if chunk.endswith(quote):
+                    collected.append(chunk[:-1])
+                    i += 1
+                    break
+                collected.append(chunk)
+                i += 1
+            data[path] = " ".join(c for c in collected if c).strip()
+            continue
+        if val and val[:1] not in ("'", '"', "[", "{"):
+            collected = [val]
+            j = i + 1
+            while j < len(lines):
+                nxt = lines[j]
+                if not nxt.strip():
+                    break
+                nindent = len(nxt) - len(nxt.lstrip())
+                if nindent <= indent:
+                    break
+                if indent > 0 and re.match(r"^\s*[A-Za-z0-9_-]+:\s", nxt):
+                    break
+                collected.append(nxt.strip())
+                j += 1
+            if len(collected) > 1:
+                data[path] = " ".join(collected)
+                i = j
+                continue
         data[path] = val.strip('"').strip()
         i += 1
     return data
@@ -159,8 +191,16 @@ def main() -> int:
     out_dir = os.path.join(root, "docs")
     os.makedirs(out_dir, exist_ok=True)
 
+    skill_paths = sorted(glob.glob(os.path.join(skills_dir, "*", "SKILL.md")))
+    if not skill_paths:
+        alt_dir = os.path.join(root, "agent", "skills")
+        skill_paths = sorted(glob.glob(os.path.join(alt_dir, "*", "SKILL.md")))
+        if skill_paths:
+            print(f"note: skills/ is empty, reading {os.path.relpath(alt_dir, root)}",
+                  file=sys.stderr)
+
     parsed: dict[str, dict] = {}
-    for path in sorted(glob.glob(os.path.join(skills_dir, "*", "SKILL.md"))):
+    for path in skill_paths:
         skill = os.path.basename(os.path.dirname(path))
         with open(path, encoding="utf-8") as f:
             parsed[skill] = parse_frontmatter(f.read())
