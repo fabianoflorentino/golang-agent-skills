@@ -390,6 +390,7 @@ def main() -> int:
   /* Route map */
   .route-map {{ position: relative; width: 100%; max-width: 480px; aspect-ratio: 1 / 1; justify-self: end; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }}
   .route-map::before {{ content: ""; position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle, rgba(56, 189, 248, .1), transparent 62%); filter: blur(14px); }}
+  .route-map::after {{ content: ""; position: absolute; top: 50%; left: 50%; width: 64px; height: 64px; border: 1px solid rgba(0, 229, 168, .3); border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%); animation: map-ping 3.6s ease-out infinite; }}
   .route-lines {{ position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }}
   .route-lines path {{ fill: none; stroke: url(#route-grad); stroke-width: .42; stroke-dasharray: 1.6 2.4; stroke-linecap: round; opacity: .42; }}
   .route-node {{ position: absolute; transform: translate(-50%, -50%); padding: .42rem .72rem; border: 1px solid var(--border); border-radius: 999px; background: rgba(13, 18, 32, .94); color: var(--text-2); font-family: var(--mono); font-size: .62rem; white-space: nowrap; box-shadow: 0 10px 28px rgba(0, 0, 0, .4); }}
@@ -403,6 +404,10 @@ def main() -> int:
   .route-center em {{ display: block; margin-top: .1rem; color: var(--muted-2); font-family: var(--mono); font-size: .48rem; font-style: normal; letter-spacing: .18em; text-align: center; text-transform: uppercase; }}
   .route-center::before {{ content: ""; position: absolute; inset: -11px; border: 1px solid rgba(0, 229, 168, .28); border-radius: 999px; animation: route-pulse 3.2s ease-out infinite; }}
   .route-orbit {{ fill: none; stroke: rgba(56, 189, 248, .18); stroke-width: .3; stroke-dasharray: 1 2.8; transform-box: view-box; transform-origin: 50% 50%; animation: route-spin 70s linear infinite; }}
+  .route-node {{ transition: border-color .25s ease, color .25s ease, box-shadow .25s ease; }}
+  .route-node.hit {{ border-color: rgba(0, 229, 168, .7); color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 229, 168, .07), 0 0 26px rgba(0, 229, 168, .4); }}
+  .route-status {{ position: absolute; top: 0; left: 0; display: inline-flex; align-items: center; gap: .35rem; padding: .28rem .55rem; border: 1px solid var(--border); border-radius: 999px; background: rgba(13, 18, 32, .9); color: var(--muted-2); font-family: var(--mono); font-size: .52rem; letter-spacing: .12em; text-transform: uppercase; }}
+  .route-status i {{ width: 5px; height: 5px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 8px rgba(0, 229, 168, .9); animation: route-pulse 2.2s ease-out infinite; }}
   .route-pulses {{ opacity: 0; transition: opacity .5s ease; }}
   .pulses-ready .route-pulses {{ opacity: 1; }}
   .route-pulse {{ fill: #6bffd6; filter: drop-shadow(0 0 2px rgba(107, 255, 214, .9)); }}
@@ -461,7 +466,7 @@ def main() -> int:
   .src a:hover {{ color: var(--primary); }}
 
   /* Quickstart */
-  .quickstart {{ padding: 0 clamp(1.25rem, 4vw, 2rem) 4.5rem; }}
+  .quickstart {{ padding: clamp(1.75rem, 3.5vw, 3rem) clamp(1.25rem, 4vw, 2rem) 0; }}
   .quickstart-band {{ display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: center; padding: clamp(1.5rem, 4vw, 2.5rem); border: 1px solid var(--border); border-left: 3px solid var(--primary); border-radius: var(--radius-lg); background: linear-gradient(120deg, rgba(0, 229, 168, .055), rgba(56, 189, 248, .035) 55%, rgba(167, 139, 250, .05)); }}
   .quickstart-commands {{ display: flex; flex-direction: column; gap: .75rem; }}
   .command {{ padding: .7rem .85rem; border: 1px solid var(--border); border-radius: var(--radius); background: #070b13; }}
@@ -494,6 +499,7 @@ def main() -> int:
   @keyframes fade-in-right {{ from {{ opacity: 0; transform: translateX(34px); }} to {{ opacity: 1; transform: translateX(0); }} }}
   @keyframes route-spin {{ to {{ transform: rotate(360deg); }} }}
   @keyframes aurora-drift {{ from {{ transform: translate3d(-3%, -2%, 0) scale(1); }} to {{ transform: translate3d(4%, 3%, 0) scale(1.08); }} }}
+  @keyframes map-ping {{ 0% {{ opacity: .55; transform: translate(-50%, -50%) scale(.35); }} 100% {{ opacity: 0; transform: translate(-50%, -50%) scale(5.2); }} }}
   @keyframes route-pulse {{ 0% {{ opacity: .8; transform: scale(.86); }} 70%, 100% {{ opacity: 0; transform: scale(1.22); }} }}
   @media (prefers-reduced-motion: reduce) {{
     *, *::before, *::after {{ animation: none !important; transition: none !important; }}
@@ -576,14 +582,15 @@ def main() -> int:
           <path id="route-p5" d="M50 50 C 50 34 50 22 50 8"/>
           <path id="route-p6" d="M50 50 C 50 66 50 78 50 92"/>
           <g class="route-pulses">
-            <circle class="route-pulse" r="1.3" data-path="route-p1" data-dur="3400" data-offset="0"/>
-            <circle class="route-pulse" r="1.3" data-path="route-p2" data-dur="3800" data-offset="0.16"/>
-            <circle class="route-pulse" r="1.3" data-path="route-p3" data-dur="4200" data-offset="0.32"/>
-            <circle class="route-pulse" r="1.3" data-path="route-p4" data-dur="3600" data-offset="0.48"/>
-            <circle class="route-pulse" r="1.3" data-path="route-p5" data-dur="4000" data-offset="0.64"/>
-            <circle class="route-pulse" r="1.3" data-path="route-p6" data-dur="3200" data-offset="0.8"/>
+            <circle class="route-pulse" r="1.6" data-path="route-p1" data-target="n1" data-dur="3400" data-offset="0"/>
+            <circle class="route-pulse" r="1.6" data-path="route-p2" data-target="n2" data-dur="3800" data-offset="0.16"/>
+            <circle class="route-pulse" r="1.6" data-path="route-p3" data-target="n3" data-dur="4200" data-offset="0.32"/>
+            <circle class="route-pulse" r="1.6" data-path="route-p4" data-target="n4" data-dur="3600" data-offset="0.48"/>
+            <circle class="route-pulse" r="1.6" data-path="route-p5" data-target="n5" data-dur="4000" data-offset="0.64"/>
+            <circle class="route-pulse" r="1.6" data-path="route-p6" data-target="n6" data-dur="3200" data-offset="0.8"/>
           </g>
         </svg>
+        <span class="route-status"><i aria-hidden="true"></i> live routing</span>
         <span class="route-node route-center">golang-how-to<em>gateway</em></span>
         <span class="route-node n1">concurrency</span>
         <span class="route-node n2">security</span>
@@ -593,25 +600,6 @@ def main() -> int:
         <span class="route-node n6">pitfalls</span>
       </div>
     </div>
-  </section>
-  <section class="guide container" id="catalog">
-    <div class="guide-head">
-      <p class="eyebrow">the index</p>
-      <h2>Every skill, one shelf.</h2>
-      <p>A dense, searchable index of the whole pack. Filter by route, then open any entry to read the full skill.</p>
-    </div>
-    <div class="filter-card" id="filters">
-      <div class="filter-search">
-        <label class="filter-label" for="search">Search</label>
-        <input type="search" id="search" placeholder="name or description..." autocomplete="off">
-      </div>
-      <div class="filter-routes">
-        <p class="filter-label">Routes</p>
-        <div class="route-chips" id="chips">{chips}</div>
-      </div>
-      <p class="filter-note"><strong id="result-count">{total}</strong> <span id="result-label">skills</span> in view</p>
-    </div>
-    <div class="guide-body" id="catalog-body">{"\n".join(sections)}</div>
   </section>
   <section class="quickstart" id="install">
     <div class="container quickstart-band">
@@ -634,6 +622,25 @@ def main() -> int:
         </div>
       </div>
     </div>
+  </section>
+  <section class="guide container" id="catalog">
+    <div class="guide-head">
+      <p class="eyebrow">the index</p>
+      <h2>Every skill, one shelf.</h2>
+      <p>A dense, searchable index of the whole pack. Filter by route, then open any entry to read the full skill.</p>
+    </div>
+    <div class="filter-card" id="filters">
+      <div class="filter-search">
+        <label class="filter-label" for="search">Search</label>
+        <input type="search" id="search" placeholder="name or description..." autocomplete="off">
+      </div>
+      <div class="filter-routes">
+        <p class="filter-label">Routes</p>
+        <div class="route-chips" id="chips">{chips}</div>
+      </div>
+      <p class="filter-note"><strong id="result-count">{total}</strong> <span id="result-label">skills</span> in view</p>
+    </div>
+    <div class="guide-body" id="catalog-body">{"\n".join(sections)}</div>
   </section>
 </main>
 <footer class="site-footer">
@@ -737,9 +744,11 @@ def main() -> int:
       items.push({{
         circle,
         path,
+        target: circle.dataset.target ? document.querySelector('.route-node.' + circle.dataset.target) : null,
         length: path.getTotalLength(),
         dur: Number(circle.dataset.dur) || 3600,
-        offset: Number(circle.dataset.offset) || 0
+        offset: Number(circle.dataset.offset) || 0,
+        prev: null
       }});
     }});
     if (!items.length) return;
@@ -748,6 +757,7 @@ def main() -> int:
       const point = item.path.getPointAtLength(t * item.length);
       item.circle.setAttribute('cx', point.x);
       item.circle.setAttribute('cy', point.y);
+      item.prev = t;
     }}
     document.documentElement.classList.add('pulses-ready');
     let start = null;
@@ -759,6 +769,11 @@ def main() -> int:
         item.circle.setAttribute('cx', point.x);
         item.circle.setAttribute('cy', point.y);
         item.circle.style.opacity = (0.4 + 0.6 * Math.sin(t * Math.PI)).toFixed(2);
+        if (item.target && t < item.prev) {{
+          item.target.classList.add('hit');
+          setTimeout(() => item.target.classList.remove('hit'), 420);
+        }}
+        item.prev = t;
       }}
       requestAnimationFrame(tick);
     }}
