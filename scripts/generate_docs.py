@@ -90,6 +90,21 @@ BRAND_MARK = """<svg class="brand-mark" viewBox="0 0 64 64" fill="none" aria-hid
         <path d="M37 18l-10 28" stroke="url(#brand-grad)" stroke-width="3.2" stroke-linecap="round"/>
       </svg>"""
 
+FAVICON_SVG = """<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="golang-agent-skills">
+  <defs>
+    <linearGradient id="favicon-grad" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00e5a8"/>
+      <stop offset=".5" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="#080b14"/>
+  <rect x="4" y="4" width="56" height="56" rx="15" fill="url(#favicon-grad)" fill-opacity=".12" stroke="url(#favicon-grad)" stroke-width="2.5"/>
+  <path d="M23 24l-8 8 8 8M41 24l8 8-8 8" fill="none" stroke="url(#favicon-grad)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M37 18l-10 28" fill="none" stroke="url(#favicon-grad)" stroke-width="3.4" stroke-linecap="round"/>
+</svg>
+"""
+
 GITHUB_ICON = """<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
           <path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.05-.02-2.06-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.01 2.9-.01 3.29 0 .32.21.7.82.58A12.01 12.01 0 0 0 24 12.5C24 5.87 18.63.5 12 .5Z"/>
         </svg>"""
@@ -275,6 +290,7 @@ def main() -> int:
 <meta name="theme-color" content="#080b14">
 <title>{NAME} — a field guide for Go agents</title>
 <meta name="description" content="AI Agent Skills for production-ready Go projects, plus the pitfalls from 100 Go Mistakes and How to Avoid Them.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -696,6 +712,8 @@ def main() -> int:
 """
     with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(page)
+    with open(os.path.join(out_dir, "favicon.svg"), "w", encoding="utf-8") as f:
+        f.write(FAVICON_SVG)
 
     print(f"generated docs/index.html with {total} skills across "
           f"{len(CATEGORIES)} categories")

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="golang-agent-skills">
+  <defs>
+    <linearGradient id="favicon-grad" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00e5a8"/>
+      <stop offset=".5" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="#080b14"/>
+  <rect x="4" y="4" width="56" height="56" rx="15" fill="url(#favicon-grad)" fill-opacity=".12" stroke="url(#favicon-grad)" stroke-width="2.5"/>
+  <path d="M23 24l-8 8 8 8M41 24l8 8-8 8" fill="none" stroke="url(#favicon-grad)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M37 18l-10 28" fill="none" stroke="url(#favicon-grad)" stroke-width="3.4" stroke-linecap="round"/>
+</svg>
