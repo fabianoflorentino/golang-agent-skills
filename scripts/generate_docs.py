@@ -174,7 +174,7 @@ def skill_blurb(skill: str) -> str:
     return f"{REPO}/blob/main/skills/{skill}/SKILL.md"
 
 
-def render_skill_html(skill: str, data: dict) -> str:
+def render_skill_html(skill: str, data: dict, index: int) -> str:
     name = nested(data, "name", skill)
     desc = nested(data, "description", "")
     emoji = nested(data, "metadata.openclaw.emoji", DEFAULT_EMOJI)
@@ -189,20 +189,22 @@ def render_skill_html(skill: str, data: dict) -> str:
     meta = [f"v{version}" if version and version != "?" else "", author]
     meta_html = " &middot; ".join(html.escape(v) for v in meta if v)
     detail_attrs = 'open' if name.startswith("golang-pitfalls") else ""
-    return f"""<article class="skill" data-category="{html.escape(CATEGORY_FOR.get(skill, 'Other'))}" data-name="{html.escape(skill)}" data-search="{html.escape(desc).lower()}">
-  <h3>
+    return f"""<details class="entry" data-category="{html.escape(CATEGORY_FOR.get(skill, 'Other'))}" data-name="{html.escape(skill)}" data-search="{html.escape(desc).lower()}" {detail_attrs}>
+  <summary class="entry-row">
+    <span class="entry-no">{index:02d}</span>
     <span class="emoji">{html.escape(emoji)}</span>
-    <span class="skill-title"><code>{html.escape(name)}</code><span class="skill-meta">{meta_html}</span></span>
-    {badge}
-  </h3>
-  <p class="desc">{html.escape(desc)}</p>
-  <details {detail_attrs}>
-    <summary><span>View skill content</span><span class="chev" aria-hidden="true">+</span></summary>
+    <span class="entry-copy">
+      <span class="entry-title"><code>{html.escape(name)}</code><span class="skill-meta">{meta_html}</span>{badge}</span>
+      <span class="desc">{html.escape(desc)}</span>
+    </span>
+    <span class="chev" aria-hidden="true">+</span>
+  </summary>
+  <div class="entry-body">
     <div class="compat">{html.escape(compat)}</div>
     <pre class="body">{html.escape(data["body"].strip())}</pre>
     <p class="src"><a href="{skill_blurb(skill)}" target="_blank" rel="noopener">View source on GitHub &rarr;</a></p>
-  </details>
-</article>"""
+  </div>
+</details>"""
 
 
 def main() -> int:
@@ -233,28 +235,37 @@ def main() -> int:
         print(f"warning: skills on disk not in any category: {unlisted}",
               file=sys.stderr)
 
-    sections = []
+    present_categories = []
     for cat, skills in CATEGORIES:
         present = [s for s in skills if s in parsed]
-        if not present:
-            continue
-        cards = "\n".join(render_skill_html(s, parsed[s]) for s in present)
+        if present:
+            present_categories.append((cat, present))
+
+    sections = []
+    for idx, (cat, present) in enumerate(present_categories, start=1):
+        entries = "\n".join(
+            render_skill_html(s, parsed[s], i)
+            for i, s in enumerate(present, start=1)
+        )
         sections.append(
             f'<section class="category" id="cat-{slugify(cat)}" '
             f'data-category="{html.escape(cat)}">'
-            f'<div class="category-head"><h2>{html.escape(cat)}</h2>'
-            f'<span class="count">{len(present)} skill{"s" if len(present) != 1 else ""}</span></div>'
-            f'<div class="grid">{cards}</div></section>'
+            f'<header class="category-head"><span class="cat-index">{idx:02d}</span>'
+            f'<h2>{html.escape(cat)}</h2>'
+            f'<span class="count">{len(present)} skill{"s" if len(present) != 1 else ""}</span></header>'
+            f'<div class="entries">{entries}</div></section>'
         )
-
-    chip_sections = ["All"] + [c for c, _ in CATEGORIES]
-    chips = "".join(
-        f'<button class="chip{" active" if c == "All" else ""}" data-filter="{html.escape(c)}">{html.escape(c)}</button>'
-        for c in chip_sections
-    )
 
     total = len(parsed)
     pitfalls = sum(1 for s in parsed if s.startswith("golang-pitfalls-"))
+    routes = len(present_categories)
+
+    rail_items = [("All", total)] + [(cat, len(present)) for cat, present in present_categories]
+    chips = "".join(
+        f'<button class="rail-link{" active" if c == "All" else ""}" data-filter="{html.escape(c)}">'
+        f'<span>{html.escape(c)}</span><span class="rail-count">{n}</span></button>'
+        for c, n in rail_items
+    )
 
     page = f"""<!doctype html>
 <html lang="en">
@@ -262,7 +273,7 @@ def main() -> int:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080b14">
-<title>{NAME} — Go agent skills catalog</title>
+<title>{NAME} — a field guide for Go agents</title>
 <meta name="description" content="AI Agent Skills for production-ready Go projects, plus the pitfalls from 100 Go Mistakes and How to Avoid Them.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -303,6 +314,7 @@ def main() -> int:
   .container {{ width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 2rem); }}
   .skip-link {{ position: fixed; top: .75rem; left: .75rem; z-index: 1000; padding: .6rem .9rem; border: 1px solid var(--primary); border-radius: var(--radius); background: var(--bg); color: var(--primary); font-family: var(--mono); font-size: .75rem; transform: translateY(-160%); transition: transform .2s ease; }}
   .skip-link:focus {{ transform: translateY(0); }}
+  .eyebrow {{ margin: 0 0 .5rem; color: var(--primary); font-family: var(--mono); font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; }}
 
   /* Header */
   .site-header {{ position: sticky; top: 0; z-index: 100; border-bottom: 1px solid transparent; background: transparent; transition: background .3s ease, border-color .3s ease, box-shadow .3s ease; }}
@@ -332,110 +344,108 @@ def main() -> int:
   /* Hero */
   .hero {{ position: relative; overflow: hidden; }}
   .hero::before {{ content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(56, 189, 248, .055) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 189, 248, .055) 1px, transparent 1px); background-size: 64px 64px; -webkit-mask-image: radial-gradient(ellipse 72% 70% at 50% 42%, #000 20%, transparent 76%); mask-image: radial-gradient(ellipse 72% 70% at 50% 42%, #000 20%, transparent 76%); }}
-  .hero-grid {{ position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr); gap: clamp(2.5rem, 5vw, 4.5rem); align-items: center; padding: clamp(2.75rem, 6vw, 5.25rem) clamp(1.25rem, 4vw, 2rem) clamp(3rem, 6vw, 4.75rem); }}
+  .hero-inner {{ position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); gap: clamp(2rem, 5vw, 4.25rem); align-items: center; padding: clamp(2.75rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2rem) clamp(3rem, 6vw, 4.5rem); }}
   .hero-copy > * {{ animation: fade-in-up .75s cubic-bezier(.2, .7, .2, 1) both; }}
   .hero-copy > *:nth-child(1) {{ animation-delay: .04s; }}
   .hero-copy > *:nth-child(2) {{ animation-delay: .1s; }}
   .hero-copy > *:nth-child(3) {{ animation-delay: .16s; }}
   .hero-copy > *:nth-child(4) {{ animation-delay: .22s; }}
   .hero-copy > *:nth-child(5) {{ animation-delay: .28s; }}
-  .hero-badge {{ display: inline-flex; align-items: center; gap: .45rem; width: fit-content; margin-bottom: 1.3rem; padding: .32rem .8rem; border: 1px solid rgba(0, 229, 168, .3); border-radius: 999px; background: var(--primary-dim); color: var(--primary); font-family: var(--mono); font-size: .74rem; font-weight: 500; transition: background .2s ease, border-color .2s ease; }}
-  .hero-badge:hover {{ border-color: rgba(0, 229, 168, .62); background: rgba(0, 229, 168, .18); }}
-  .badge-dot {{ width: 6px; height: 6px; border-radius: 50%; background: var(--primary); animation: dot-pulse 2s ease-out infinite; }}
-  .badge-arrow {{ opacity: .7; transition: transform .2s ease; }}
-  .hero-badge:hover .badge-arrow {{ transform: translateX(3px); }}
-  .hero-headline {{ margin: 0 0 1.25rem; font-size: clamp(2.5rem, 4.6vw, 3.65rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.02; text-wrap: balance; }}
+  .hero-copy > *:nth-child(6) {{ animation-delay: .34s; }}
+  .hero-kicker {{ display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; margin: 0 0 1.15rem; color: var(--muted-2); font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; }}
+  .hero-kicker b {{ color: var(--primary); font-weight: 500; }}
+  .hero-kicker i {{ width: 3px; height: 3px; border-radius: 50%; background: var(--border-2); }}
+  .hero-headline {{ margin: 0 0 1.2rem; font-size: clamp(2.5rem, 4.6vw, 3.65rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.02; text-wrap: balance; }}
   .gradient-text {{ background: var(--grad-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }}
-  .hero-sub {{ max-width: 52ch; margin: 0 0 1.85rem; color: var(--text-2); font-size: clamp(1rem, 1.3vw, 1.1rem); line-height: 1.7; }}
-  .hero-actions {{ display: flex; flex-wrap: wrap; gap: .7rem; margin-bottom: 1.35rem; }}
-  .install-snippet {{ display: flex; flex-wrap: wrap; align-items: baseline; gap: .55rem; max-width: 100%; padding: .62rem .85rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); font-family: var(--mono); font-size: .76rem; }}
-  .install-prompt {{ color: var(--primary); }}
-  .install-snippet code {{ flex: 1; min-width: 0; color: var(--text-2); line-height: 1.5; overflow-wrap: anywhere; }}
-  .install-copy {{ flex-shrink: 0; padding: .2rem .4rem; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--muted-2); font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; transition: color .2s ease, border-color .2s ease; }}
-  .install-copy:hover, .install-copy.is-copied {{ border-color: var(--border-2); color: var(--primary); }}
+  .hero-sub {{ max-width: 52ch; margin: 0 0 1.6rem; color: var(--text-2); font-size: clamp(1rem, 1.3vw, 1.08rem); line-height: 1.7; }}
+  .hero-actions {{ display: flex; flex-wrap: wrap; gap: .7rem; margin-bottom: 1.5rem; }}
+  .hero-facts {{ display: flex; flex-wrap: wrap; align-items: center; gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }}
+  .hero-facts li {{ padding: .7rem 1.1rem .7rem 0; margin-right: 1.1rem; border-right: 1px solid var(--border); font-family: var(--mono); font-size: .64rem; color: var(--muted-2); letter-spacing: .06em; text-transform: uppercase; }}
+  .hero-facts li:last-child {{ border-right: 0; margin-right: 0; padding-right: 0; }}
+  .hero-facts b {{ display: block; margin-bottom: .1rem; color: var(--text); font-family: var(--sans); font-size: 1.05rem; font-weight: 700; letter-spacing: -.02em; text-transform: none; }}
+  .hero-hint {{ margin: .85rem 0 0; color: var(--muted-2); font-size: .76rem; }}
+  .hero-hint code {{ padding: .1em .35em; border-radius: 5px; background: var(--primary-dim); color: var(--primary); font-size: .9em; }}
 
-  /* Terminal */
-  .hero-terminal {{ position: relative; max-width: 560px; justify-self: end; }}
-  .terminal-window {{ overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-lg); background: linear-gradient(180deg, rgba(17, 24, 39, .96), rgba(9, 13, 24, .98)); box-shadow: 0 24px 70px rgba(0, 0, 0, .55), 0 0 0 1px rgba(56, 189, 248, .05); animation: fade-in-right .8s cubic-bezier(.2, .7, .2, 1) both .2s; }}
-  .terminal-chrome {{ display: flex; align-items: center; gap: .6rem; padding: .7rem .95rem; border-bottom: 1px solid var(--border); background: rgba(13, 18, 32, .8); }}
-  .terminal-dots {{ display: flex; gap: .38rem; }}
-  .terminal-dots i {{ width: 10px; height: 10px; border-radius: 50%; }}
-  .dot-red {{ background: #ff5f57; }}
-  .dot-yellow {{ background: #febc2e; }}
-  .dot-green {{ background: #28c840; }}
-  .terminal-title {{ margin-left: .3rem; color: var(--muted-2); font-family: var(--mono); font-size: .66rem; letter-spacing: .04em; }}
-  .terminal-body {{ padding: 1rem 1.1rem 1.15rem; font-family: var(--mono); font-size: .72rem; line-height: 1.85; }}
-  .t-line {{ margin: 0; color: var(--text-2); white-space: pre-wrap; overflow-wrap: anywhere; }}
-  .t-prompt {{ color: var(--primary); margin-right: .4rem; }}
-  .t-ok {{ color: var(--green); }}
-  .t-cmd {{ color: var(--text); }}
-  .t-route {{ color: var(--accent); }}
-  .t-child {{ padding-left: 1rem; color: var(--secondary); }}
-  .t-dim {{ color: var(--muted-2); }}
-  .t-hint {{ margin-top: .4rem; color: var(--muted); }}
-  .t-cursor {{ display: inline-block; width: .55em; margin-left: .2rem; color: var(--primary); animation: blink 1.05s step-end infinite; }}
+  /* Route map */
+  .route-map {{ position: relative; width: 100%; max-width: 520px; aspect-ratio: 1 / 1; justify-self: end; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }}
+  .route-map::before {{ content: ""; position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle, rgba(56, 189, 248, .1), transparent 62%); filter: blur(14px); }}
+  .route-lines {{ position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }}
+  .route-lines path {{ fill: none; stroke: url(#route-grad); stroke-width: .5; stroke-dasharray: 2.4 2.4; stroke-linecap: round; opacity: .55; animation: route-dash 22s linear infinite; }}
+  .route-node {{ position: absolute; transform: translate(-50%, -50%); padding: .42rem .72rem; border: 1px solid var(--border); border-radius: 999px; background: rgba(13, 18, 32, .94); color: var(--text-2); font-family: var(--mono); font-size: .62rem; white-space: nowrap; box-shadow: 0 10px 28px rgba(0, 0, 0, .4); animation: route-float 7s ease-in-out infinite; }}
+  .route-node.n1 {{ left: 16%; top: 22%; }}
+  .route-node.n2 {{ left: 84%; top: 20%; animation-delay: -1.2s; }}
+  .route-node.n3 {{ left: 12%; top: 80%; animation-delay: -2.4s; }}
+  .route-node.n4 {{ left: 88%; top: 78%; animation-delay: -3.6s; }}
+  .route-node.n5 {{ left: 50%; top: 8%; animation-delay: -4.8s; }}
+  .route-node.n6 {{ left: 50%; top: 92%; animation-delay: -6s; }}
+  .route-center {{ left: 50%; top: 50%; z-index: 2; padding: .6rem 1rem; border-color: rgba(0, 229, 168, .55); color: var(--primary); font-size: .7rem; box-shadow: 0 0 0 7px rgba(0, 229, 168, .05), 0 0 34px rgba(0, 229, 168, .28); animation: none; }}
+  .route-center em {{ display: block; margin-top: .1rem; color: var(--muted-2); font-family: var(--mono); font-size: .48rem; font-style: normal; letter-spacing: .18em; text-align: center; text-transform: uppercase; }}
+  .route-center::before {{ content: ""; position: absolute; inset: -11px; border: 1px solid rgba(0, 229, 168, .28); border-radius: 999px; animation: route-pulse 3.2s ease-out infinite; }}
 
-  /* Signal strip */
-  .signal-strip {{ position: relative; z-index: 1; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(13, 18, 32, .55); animation: fade-in-up .8s .4s cubic-bezier(.2, .7, .2, 1) both; }}
-  .signal-grid {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }}
-  .signal-grid > div {{ padding: 1.15rem 1rem; border-right: 1px solid var(--border); }}
-  .signal-grid > div:last-child {{ border-right: 0; }}
-  .signal-grid span {{ display: block; margin-bottom: .25rem; color: var(--muted-2); font-family: var(--mono); font-size: .58rem; letter-spacing: .14em; }}
-  .signal-grid strong {{ display: block; font-size: .98rem; font-weight: 700; line-height: 1.25; }}
-  .signal-grid em {{ display: block; margin-top: .15rem; color: var(--muted); font-size: .78rem; font-style: normal; }}
-
-  /* Catalog */
-  .catalog {{ padding: clamp(2.75rem, 5vw, 4.5rem) clamp(1.25rem, 4vw, 2rem) 4rem; }}
-  .catalog-head {{ display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.75rem; }}
-  .eyebrow {{ margin: 0 0 .45rem; color: var(--primary); font-family: var(--mono); font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; }}
-  .catalog-head h2, .install-head h2 {{ margin: 0 0 .4rem; font-size: clamp(1.7rem, 3vw, 2.3rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }}
-  .catalog-sub, .install-head p {{ margin: 0; max-width: 68ch; color: var(--muted); font-size: .95rem; }}
-  .catalog-count {{ flex-shrink: 0; padding: .4rem .75rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-2); color: var(--muted); font-family: var(--mono); font-size: .7rem; }}
-  .toolbar {{ display: flex; flex-wrap: wrap; align-items: center; gap: .9rem; margin-bottom: .5rem; }}
-  input[type=search] {{ flex: 1 1 320px; width: 100%; padding: .85rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); color: var(--text); font: .9rem var(--sans); outline: none; transition: border-color .2s ease, box-shadow .2s ease; }}
+  /* Guide / index */
+  .guide {{ padding: clamp(2.75rem, 5vw, 4.5rem) clamp(1.25rem, 4vw, 2rem) 4.5rem; }}
+  .guide-head {{ max-width: 72ch; margin-bottom: 2rem; }}
+  .guide-head h2, .quickstart-copy h2 {{ margin: 0 0 .45rem; font-size: clamp(1.7rem, 3vw, 2.25rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }}
+  .guide-head p, .quickstart-copy p {{ margin: 0; color: var(--muted); font-size: .95rem; }}
+  .guide-shell {{ display: grid; grid-template-columns: minmax(210px, 250px) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }}
+  .rail {{ position: sticky; top: calc(var(--nav-h) + 1.5rem); align-self: start; display: flex; flex-direction: column; gap: 1.4rem; }}
+  .rail-label {{ display: block; margin: 0 0 .55rem; color: var(--muted-2); font-family: var(--mono); font-size: .6rem; letter-spacing: .16em; text-transform: uppercase; }}
+  input[type=search] {{ width: 100%; padding: .72rem .85rem; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--text); font: .82rem var(--sans); outline: none; transition: border-color .2s ease, box-shadow .2s ease; }}
   input[type=search]::placeholder {{ color: var(--muted-2); }}
   input[type=search]:focus {{ border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 229, 168, .12); }}
-  .chips {{ display: flex; flex-wrap: wrap; gap: .45rem; }}
-  .chip {{ padding: .42rem .8rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-2); color: var(--muted); font-size: .76rem; font-weight: 500; transition: border-color .2s ease, color .2s ease, background .2s ease; }}
-  .chip:hover {{ border-color: var(--border-2); color: var(--text); }}
-  .chip.active {{ border-color: rgba(0, 229, 168, .5); background: var(--primary-dim); color: var(--primary); }}
-  .category {{ margin: 3rem 0 0; scroll-margin-top: 6.5rem; }}
-  .category-head {{ display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: .9rem; border-bottom: 1px solid var(--border); }}
-  .category h2 {{ margin: 0; font-size: 1.25rem; font-weight: 700; letter-spacing: -.02em; }}
-  .count {{ color: var(--muted-2); font-family: var(--mono); font-size: .7rem; }}
-  .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.15rem; margin-top: 1.35rem; }}
-  .skill {{ position: relative; overflow: hidden; display: flex; flex-direction: column; padding: 1.35rem 1.4rem 1.15rem; border: 1px solid var(--border); border-radius: var(--radius-lg); background: linear-gradient(180deg, rgba(17, 24, 39, .8), rgba(13, 18, 32, .9)); transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; }}
-  .skill::before {{ content: ""; position: absolute; top: 0; right: 0; left: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0, 229, 168, .55), transparent); opacity: 0; transition: opacity .3s ease; }}
-  .skill:hover {{ transform: translateY(-3px); border-color: rgba(0, 229, 168, .38); box-shadow: 0 14px 42px rgba(0, 0, 0, .35), 0 0 30px rgba(0, 229, 168, .07); }}
-  .skill:hover::before {{ opacity: 1; }}
-  .skill h3 {{ display: flex; align-items: center; gap: .8rem; margin: 0 0 .9rem; font-size: 1rem; }}
-  .emoji {{ flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-3); font-size: 19px; }}
-  .skill-title {{ display: flex; flex-direction: column; gap: .12rem; min-width: 0; }}
-  .skill-title code {{ color: var(--primary); font-size: .86rem; font-weight: 600; overflow-wrap: anywhere; }}
-  .skill-meta {{ color: var(--muted-2); font-family: var(--mono); font-size: .62rem; }}
-  .badge {{ margin-left: auto; flex-shrink: 0; padding: .2rem .45rem; border: 1px solid rgba(167, 139, 250, .32); border-radius: 6px; background: rgba(167, 139, 250, .12); color: var(--accent); font-family: var(--mono); font-size: .58rem; }}
-  .desc {{ flex: 1 1 auto; margin: 0 0 1.1rem; color: var(--muted); font-size: .86rem; line-height: 1.65; }}
-  details {{ border-top: 1px solid var(--border); padding-top: .8rem; }}
-  summary {{ display: flex; align-items: center; justify-content: space-between; gap: .75rem; cursor: pointer; color: var(--secondary); font-size: .76rem; font-weight: 600; list-style: none; }}
-  summary::-webkit-details-marker {{ display: none; }}
-  summary .chev {{ color: var(--muted-2); font-family: var(--mono); font-size: 1rem; line-height: 1; transition: transform .2s ease, color .2s ease; }}
-  summary:hover .chev {{ color: var(--secondary); }}
-  details[open] summary .chev {{ transform: rotate(45deg); }}
-  .compat {{ margin-top: .85rem; color: var(--muted); font-size: .74rem; }}
-  pre.body {{ margin-top: .85rem; padding: 1rem; max-height: 420px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); background: #070b13; color: var(--text-2); font-size: .72rem; line-height: 1.65; white-space: pre-wrap; }}
-  .src {{ margin: .85rem 0 0; }}
+  .rail-list {{ display: flex; flex-direction: column; gap: .15rem; }}
+  .rail-link {{ display: flex; align-items: center; justify-content: space-between; gap: .6rem; width: 100%; padding: .45rem .6rem; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--muted); font-size: .79rem; text-align: left; transition: background .2s ease, border-color .2s ease, color .2s ease; }}
+  .rail-link:hover {{ background: var(--surface-2); color: var(--text); }}
+  .rail-link.active {{ border-color: rgba(0, 229, 168, .35); background: var(--primary-dim); color: var(--primary); }}
+  .rail-count {{ flex-shrink: 0; color: var(--muted-2); font-family: var(--mono); font-size: .6rem; }}
+  .rail-link.active .rail-count {{ color: var(--primary); }}
+  .rail-note {{ margin: 0; color: var(--muted-2); font-family: var(--mono); font-size: .64rem; }}
+  .rail-note strong {{ color: var(--text); font-weight: 500; }}
+  .guide-body {{ min-width: 0; }}
+  .category {{ margin: 0 0 2.5rem; scroll-margin-top: 6.5rem; }}
+  .category:last-child {{ margin-bottom: 0; }}
+  .category-head {{ display: flex; align-items: baseline; gap: .7rem; padding-bottom: .55rem; border-bottom: 1px solid var(--border); }}
+  .cat-index {{ color: var(--primary); font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; }}
+  .category-head h2 {{ margin: 0; font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em; }}
+  .category-head .count {{ margin-left: auto; color: var(--muted-2); font-family: var(--mono); font-size: .6rem; }}
+  .entries {{ display: flex; flex-direction: column; }}
+  .entry {{ border-bottom: 1px solid var(--border); }}
+  .entry:last-child {{ border-bottom: 0; }}
+  .entry-row {{ display: grid; grid-template-columns: 30px 36px minmax(0, 1fr) 22px; gap: .75rem; align-items: start; padding: .95rem .35rem; cursor: pointer; list-style: none; border-radius: 8px; transition: background .2s ease; }}
+  .entry-row::-webkit-details-marker {{ display: none; }}
+  .entry-row:hover {{ background: rgba(56, 189, 248, .045); }}
+  .entry-no {{ padding-top: .42rem; color: var(--muted-2); font-family: var(--mono); font-size: .58rem; }}
+  .emoji {{ display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-3); font-size: 16px; }}
+  .entry-copy {{ display: flex; flex-direction: column; gap: .2rem; min-width: 0; }}
+  .entry-title {{ display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }}
+  .entry-title code {{ color: var(--primary); font-size: .84rem; font-weight: 600; overflow-wrap: anywhere; }}
+  .skill-meta {{ color: var(--muted-2); font-family: var(--mono); font-size: .58rem; }}
+  .badge {{ padding: .15rem .4rem; border: 1px solid rgba(167, 139, 250, .32); border-radius: 5px; background: rgba(167, 139, 250, .12); color: var(--accent); font-family: var(--mono); font-size: .55rem; }}
+  .desc {{ display: -webkit-box; overflow: hidden; margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }}
+  .chev {{ padding-top: .18rem; color: var(--muted-2); font-family: var(--mono); font-size: 1rem; line-height: 1; transition: transform .2s ease, color .2s ease; }}
+  .entry-row:hover .chev {{ color: var(--secondary); }}
+  details[open] > .entry-row .chev {{ color: var(--primary); transform: rotate(45deg); }}
+  details[open] .desc {{ display: block; overflow: visible; -webkit-line-clamp: unset; }}
+  .entry-body {{ padding: .1rem .35rem 1.3rem 4.1rem; }}
+  .compat {{ color: var(--muted); font-size: .73rem; }}
+  pre.body {{ margin-top: .8rem; padding: 1rem; max-height: 420px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); background: #070b13; color: var(--text-2); font-size: .72rem; line-height: 1.65; white-space: pre-wrap; }}
+  .src {{ margin: .8rem 0 0; }}
   .src a {{ color: var(--secondary); font-size: .72rem; }}
   .src a:hover {{ color: var(--primary); }}
 
-  /* Install */
-  .install-section {{ padding: 0 clamp(1.25rem, 4vw, 2rem) 4.5rem; }}
-  .install-panel {{ padding: clamp(1.5rem, 4vw, 2.75rem); border: 1px solid var(--border); border-radius: var(--radius-lg); background: linear-gradient(135deg, rgba(0, 229, 168, .06), rgba(56, 189, 248, .05) 50%, rgba(167, 139, 250, .06)); }}
-  .install-head {{ margin-bottom: 1.4rem; }}
-  .install-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: .9rem; }}
-  .code-block {{ display: flex; align-items: center; gap: .65rem; padding: .8rem .9rem; border: 1px solid var(--border); border-radius: var(--radius); background: #070b13; }}
-  .code-block code {{ flex: 1; min-width: 0; color: var(--text-2); font-size: .72rem; overflow-wrap: anywhere; }}
-  .harness-row {{ display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.1rem; }}
-  .harness-row span {{ padding: .3rem .6rem; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-2); color: var(--muted); font-family: var(--mono); font-size: .64rem; }}
+  /* Quickstart */
+  .quickstart {{ padding: 0 clamp(1.25rem, 4vw, 2rem) 4.5rem; }}
+  .quickstart-band {{ display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: center; padding: clamp(1.5rem, 4vw, 2.5rem); border: 1px solid var(--border); border-left: 3px solid var(--primary); border-radius: var(--radius-lg); background: linear-gradient(120deg, rgba(0, 229, 168, .055), rgba(56, 189, 248, .035) 55%, rgba(167, 139, 250, .05)); }}
+  .quickstart-commands {{ display: flex; flex-direction: column; gap: .75rem; }}
+  .command {{ padding: .7rem .85rem; border: 1px solid var(--border); border-radius: var(--radius); background: #070b13; }}
+  .cmd-label {{ display: block; margin-bottom: .3rem; color: var(--muted-2); font-family: var(--mono); font-size: .55rem; letter-spacing: .14em; text-transform: uppercase; }}
+  .cmd-line {{ display: flex; align-items: baseline; gap: .55rem; }}
+  .cmd-line span {{ color: var(--primary); font-family: var(--mono); font-size: .7rem; }}
+  .cmd-line code {{ flex: 1; min-width: 0; color: var(--text-2); font-size: .7rem; overflow-wrap: anywhere; }}
+  .install-copy {{ flex-shrink: 0; padding: .18rem .38rem; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--muted-2); font-family: var(--mono); font-size: .55rem; letter-spacing: .08em; text-transform: uppercase; transition: color .2s ease, border-color .2s ease; }}
+  .install-copy:hover, .install-copy.is-copied {{ border-color: var(--border-2); color: var(--primary); }}
+  .harness-row {{ display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1rem; }}
+  .harness-row span {{ padding: .28rem .55rem; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-2); color: var(--muted); font-family: var(--mono); font-size: .6rem; }}
 
   /* Footer */
   .site-footer {{ border-top: 1px solid var(--border); padding: 2rem 0; color: var(--muted-2); font-size: .76rem; }}
@@ -455,24 +465,32 @@ def main() -> int:
 
   @keyframes fade-in-up {{ from {{ opacity: 0; transform: translateY(24px); }} to {{ opacity: 1; transform: translateY(0); }} }}
   @keyframes fade-in-right {{ from {{ opacity: 0; transform: translateX(34px); }} to {{ opacity: 1; transform: translateX(0); }} }}
-  @keyframes dot-pulse {{ 0%, 100% {{ box-shadow: 0 0 0 0 rgba(0, 229, 168, .55); }} 50% {{ box-shadow: 0 0 0 6px rgba(0, 229, 168, 0); }} }}
-  @keyframes blink {{ 0%, 100% {{ opacity: 1; }} 50% {{ opacity: 0; }} }}
+  @keyframes route-float {{ 0%, 100% {{ transform: translate(-50%, -50%); }} 50% {{ transform: translate(-50%, calc(-50% - 7px)); }} }}
+  @keyframes route-dash {{ to {{ stroke-dashoffset: -100; }} }}
+  @keyframes route-pulse {{ 0% {{ opacity: .8; transform: scale(.86); }} 70%, 100% {{ opacity: 0; transform: scale(1.22); }} }}
   @media (prefers-reduced-motion: reduce) {{
     *, *::before, *::after {{ animation: none !important; transition: none !important; }}
   }}
 
-  @media (max-width: 900px) {{
-    .hero-grid {{ grid-template-columns: 1fr; }}
-    .hero-terminal {{ justify-self: stretch; max-width: none; }}
+  @media (max-width: 980px) {{
+    .hero-inner {{ grid-template-columns: 1fr; }}
+    .route-map {{ justify-self: center; max-width: 470px; margin-top: .5rem; }}
+    .guide-shell {{ grid-template-columns: 1fr; gap: 1.5rem; }}
+    .rail {{ position: static; flex-direction: row; flex-wrap: wrap; align-items: flex-end; gap: 1.25rem; }}
+    .rail-block {{ flex: 1 1 220px; }}
+    .rail-block:last-of-type {{ flex-basis: 100%; }}
+    .rail-list {{ flex-direction: row; flex-wrap: wrap; }}
+    .rail-link {{ width: auto; }}
+    .rail-link .rail-count {{ margin-left: .35rem; }}
     .nav-links {{ display: none; }}
+    .quickstart-band {{ grid-template-columns: 1fr; }}
   }}
   @media (max-width: 640px) {{
     .nav-cta {{ display: none; }}
     .nav-logo {{ font-size: .85rem; }}
-    .signal-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
-    .signal-grid > div:nth-child(2n) {{ border-right: 0; }}
-    .signal-grid > div:nth-child(-n+2) {{ border-bottom: 1px solid var(--border); }}
-    .grid {{ grid-template-columns: 1fr; }}
+    .entry-row {{ grid-template-columns: 24px 32px minmax(0, 1fr) 18px; gap: .55rem; }}
+    .entry-body {{ padding-left: .35rem; }}
+    .hero-facts li {{ padding-right: .8rem; margin-right: .8rem; }}
     .footer-inner {{ flex-direction: column; align-items: flex-start; }}
   }}
 </style>
@@ -486,104 +504,109 @@ def main() -> int:
       <span>{NAME}</span>
     </a>
     <ul class="nav-links">
-      <li><a href="#catalog">Catalog</a></li>
+      <li><a href="#catalog">Index</a></li>
       <li><a href="#cat-pitfalls-100-go-mistakes">Pitfalls</a></li>
-      <li><a href="#install">Install</a></li>
+      <li><a href="#install">Quickstart</a></li>
       <li><a href="{REPO}/blob/main/README.md" target="_blank" rel="noopener">README</a></li>
     </ul>
     <div class="nav-actions">
       <a class="nav-github" href="{REPO}" target="_blank" rel="noopener" aria-label="GitHub repository">{GITHUB_ICON}</a>
-      <a class="nav-cta" href="#install">Get started</a>
+      <a class="nav-cta" href="#install">Install</a>
     </div>
   </nav>
 </header>
 <main id="top">
   <section class="hero">
-    <div class="hero-grid container">
+    <div class="hero-inner container">
       <div class="hero-copy">
-        <a class="hero-badge" href="{REPO}" target="_blank" rel="noopener">
-          <span class="badge-dot" aria-hidden="true"></span>
-          {total} skills &middot; {pitfalls} pitfalls &middot; MIT
-          <span class="badge-arrow" aria-hidden="true">&rarr;</span>
-        </a>
-        <h1 class="hero-headline">Go skills for<br><span class="gradient-text">AI coding agents.</span></h1>
+        <p class="hero-kicker"><b>field guide</b><i></i>{total} skills<i></i>MIT</p>
+        <h1 class="hero-headline">A field guide<br>for <span class="gradient-text">Go agents.</span></h1>
         <p class="hero-sub">A versioned, cross-referenced pack that makes an agent reliably write, review and debug idiomatic Go &mdash; from architecture and concurrency to security and performance.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#catalog">Browse the catalog <span aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn-primary" href="#catalog">Open the index <span aria-hidden="true">&rarr;</span></a>
           <a class="btn btn-outline" href="{REPO}" target="_blank" rel="noopener">{GITHUB_ICON} GitHub</a>
         </div>
-        <div class="hero-install">
-          <div class="install-snippet">
-            <span class="install-prompt" aria-hidden="true">$</span>
-            <code>{INSTALL_ALL}</code>
-            <button class="install-copy" type="button" data-copy="{INSTALL_ALL}">copy</button>
-          </div>
+        <ul class="hero-facts">
+          <li><b>{total}</b>skills</li>
+          <li><b>{pitfalls}</b>pitfall audits</li>
+          <li><b>{routes}</b>routes</li>
+          <li><b>MIT</b>license</li>
+        </ul>
+        <p class="hero-hint">Start with <code>golang-how-to</code> &mdash; the gateway that routes every task to the right skills.</p>
+      </div>
+      <div class="route-map" aria-hidden="true">
+        <svg class="route-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="route-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#00e5a8"/>
+              <stop offset=".5" stop-color="#38bdf8"/>
+              <stop offset="1" stop-color="#a78bfa"/>
+            </linearGradient>
+          </defs>
+          <path d="M50 50 C 36 38 26 30 16 22"/>
+          <path d="M50 50 C 64 38 74 30 84 20"/>
+          <path d="M50 50 C 38 62 26 70 12 80"/>
+          <path d="M50 50 C 62 62 76 70 88 78"/>
+          <path d="M50 50 C 50 34 50 22 50 8"/>
+          <path d="M50 50 C 50 66 50 78 50 92"/>
+        </svg>
+        <span class="route-node route-center">golang-how-to<em>gateway</em></span>
+        <span class="route-node n1">concurrency</span>
+        <span class="route-node n2">security</span>
+        <span class="route-node n3">testing</span>
+        <span class="route-node n4">performance</span>
+        <span class="route-node n5">APIs</span>
+        <span class="route-node n6">pitfalls</span>
+      </div>
+    </div>
+  </section>
+  <section class="guide container" id="catalog">
+    <div class="guide-head">
+      <p class="eyebrow">the index</p>
+      <h2>Every skill, one shelf.</h2>
+      <p>A dense, searchable index of the whole pack. Filter by route, then open any entry to read the full skill.</p>
+    </div>
+    <div class="guide-shell">
+      <aside class="rail" aria-label="Catalog filters">
+        <div class="rail-block">
+          <label class="rail-label" for="search">Search</label>
+          <input type="search" id="search" placeholder="name or description..." autocomplete="off">
         </div>
-      </div>
-      <div class="hero-terminal" aria-hidden="true">
-        <div class="terminal-window">
-          <div class="terminal-chrome">
-            <span class="terminal-dots"><i class="dot-red"></i><i class="dot-yellow"></i><i class="dot-green"></i></span>
-            <span class="terminal-title">{NAME} &mdash; session</span>
-          </div>
-          <div class="terminal-body">
-            <p class="t-line"><span class="t-prompt">$</span>npx skills add {REPO} --all</p>
-            <p class="t-line t-ok">&#10003; installed {total} skills &middot; 0 errors</p>
-            <p class="t-line"><span class="t-prompt">$</span>claude</p>
-            <p class="t-line t-cmd">&gt; review this handler for concurrency bugs</p>
-            <p class="t-line t-route">&#9680; golang-how-to <span class="t-dim">routing&hellip;</span></p>
-            <p class="t-line t-child">&rdsh; golang-concurrency</p>
-            <p class="t-line t-child">&rdsh; golang-safety</p>
-            <p class="t-line t-child">&rdsh; golang-troubleshooting</p>
-            <p class="t-line t-hint">3 skills loaded &middot; <span class="t-dim">~8.1k tokens</span><span class="t-cursor">&#9611;</span></p>
-          </div>
+        <div class="rail-block">
+          <p class="rail-label">Routes</p>
+          <div class="rail-list" id="chips">{chips}</div>
         </div>
-      </div>
+        <p class="rail-note"><strong id="result-count">{total}</strong> skills in view</p>
+      </aside>
+      <div class="guide-body" id="catalog-body">{"\n".join(sections)}</div>
     </div>
   </section>
-  <section class="signal-strip" aria-label="Core capabilities">
-    <div class="container signal-grid">
-      <div><span>01</span><strong>{total} skills</strong><em>versioned catalog</em></div>
-      <div><span>02</span><strong>{pitfalls} pitfalls</strong><em>100 Go Mistakes</em></div>
-      <div><span>03</span><strong>6+ harnesses</strong><em>Claude, Codex, Cursor&hellip;</em></div>
-      <div><span>04</span><strong>MIT</strong><em>open source</em></div>
-    </div>
-  </section>
-  <section class="catalog container" id="catalog">
-    <div class="catalog-head">
-      <div>
-        <p class="eyebrow">catalog</p>
-        <h2>Every skill, one place</h2>
-        <p class="catalog-sub">Search by name or description, filter by category, and expand any card to read the full skill.</p>
-      </div>
-      <span class="catalog-count" id="result-count">{total} skills</span>
-    </div>
-    <div class="toolbar">
-      <input type="search" id="search" placeholder="Search skills by name or description..." autocomplete="off" aria-label="Search skills">
-      <div class="chips" id="chips">{chips}</div>
-    </div>
-    <div id="catalog-body">{"\n".join(sections)}</div>
-  </section>
-  <section class="install-section" id="install">
-    <div class="container install-panel">
-      <div class="install-head">
-        <p class="eyebrow">install</p>
-        <h2>Add the pack to your agent</h2>
+  <section class="quickstart" id="install">
+    <div class="container quickstart-band">
+      <div class="quickstart-copy">
+        <p class="eyebrow">quickstart</p>
+        <h2>Install the whole field guide</h2>
         <p>One command installs every skill for any Agent Skills&ndash;compatible harness. Or pick a single skill to start with.</p>
+        <div class="harness-row">
+          <span>Claude Code</span><span>Codex</span><span>Gemini CLI</span><span>Cursor</span><span>Copilot</span><span>OpenCode</span><span>Antigravity</span>
+        </div>
       </div>
-      <div class="install-grid">
-        <div class="code-block"><code>{INSTALL_ALL}</code><button class="install-copy" type="button" data-copy="{INSTALL_ALL}">copy</button></div>
-        <div class="code-block"><code>{INSTALL_ONE}</code><button class="install-copy" type="button" data-copy="{INSTALL_ONE}">copy</button></div>
-      </div>
-      <div class="harness-row">
-        <span>Claude Code</span><span>Codex</span><span>Gemini CLI</span><span>Cursor</span><span>Copilot</span><span>OpenCode</span><span>Antigravity</span>
+      <div class="quickstart-commands">
+        <div class="command">
+          <span class="cmd-label">all skills</span>
+          <div class="cmd-line"><span aria-hidden="true">$</span><code>{INSTALL_ALL}</code><button class="install-copy" type="button" data-copy="{INSTALL_ALL}">copy</button></div>
+        </div>
+        <div class="command">
+          <span class="cmd-label">one skill</span>
+          <div class="cmd-line"><span aria-hidden="true">$</span><code>{INSTALL_ONE}</code><button class="install-copy" type="button" data-copy="{INSTALL_ONE}">copy</button></div>
+        </div>
       </div>
     </div>
   </section>
 </main>
 <footer class="site-footer">
   <div class="container footer-inner">
-    <div class="footer-brand">{BRAND_MARK}<p>{NAME} &mdash; Go skills for AI coding agents.</p></div>
+    <div class="footer-brand">{BRAND_MARK}<p>{NAME} &mdash; a field guide for Go agents.</p></div>
     <div class="footer-links">
       <a href="{REPO}" target="_blank" rel="noopener">GitHub</a>
       <a href="{REPO}/blob/main/README.md" target="_blank" rel="noopener">README</a>
@@ -598,7 +621,7 @@ def main() -> int:
 </button>
 <script>
   const search = document.getElementById('search');
-  const chips = document.querySelectorAll('.chip');
+  const chips = document.querySelectorAll('.rail-link');
   const categories = document.querySelectorAll('.category');
   const toTop = document.getElementById('toTop');
   const header = document.getElementById('site-header');
@@ -624,7 +647,7 @@ def main() -> int:
     let visible = 0;
     categories.forEach(cat => {{
       let anyVisible = false;
-      cat.querySelectorAll('.skill').forEach(s => {{
+      cat.querySelectorAll('.entry').forEach(s => {{
         const hay = s.dataset.search || s.dataset.name;
         const okCat = activeFilter === 'All' || s.dataset.category === activeFilter;
         const okQ = !q || s.dataset.name.toLowerCase().includes(q) || hay.includes(q);
@@ -634,7 +657,7 @@ def main() -> int:
       }});
       cat.style.display = anyVisible ? '' : 'none';
     }});
-    resultCount.textContent = visible + (visible === 1 ? ' skill' : ' skills');
+    resultCount.textContent = visible;
     updateChrome();
   }}
 
