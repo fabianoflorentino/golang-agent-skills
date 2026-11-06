@@ -468,6 +468,7 @@ def main() -> int:
   .filter-note {{ margin: 0; color: var(--muted-2); font-family: var(--mono); font-size: .62rem; white-space: nowrap; }}
   .filter-note strong {{ color: var(--text); font-weight: 500; }}
   .guide-body {{ min-width: 0; }}
+  .guide-body.filtered {{ min-height: max(420px, calc(100vh - 340px)); }}
   .category {{ margin: 0 0 2.5rem; scroll-margin-top: 11rem; }}
   .category.fade-in {{ animation: fade-in-up .3s ease both; }}
   .category:last-child {{ margin-bottom: 0; }}
@@ -846,6 +847,7 @@ def main() -> int:
         cat.classList.add('fade-in');
       }}
     }});
+    guideBody.classList.toggle('filtered', activeFilter !== 'All' || q !== '');
     resultCount.textContent = visible;
     resultLabel.textContent = visible === 1 ? 'skill' : 'skills';
     updateChrome();
