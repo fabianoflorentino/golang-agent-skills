@@ -18,13 +18,13 @@ NAME = "golang-agent-skills"
 INSTALL_ALL = f"npx skills add {REPO} --all"
 INSTALL_ONE = f"npx skills add {REPO} --skill golang-pitfalls-error-handling"
 
-DECK_SKILLS = [
-    "golang-security",
-    "golang-concurrency",
-    "golang-testing",
-    "golang-project-layout",
-    "golang-rest",
-    "golang-pitfalls-error-handling",
+MIND_NODES = [
+    ("golang-security", "security"),
+    ("golang-concurrency", "concurrency"),
+    ("golang-rest", "rest"),
+    ("golang-testing", "testing"),
+    ("golang-project-layout", "layout"),
+    ("golang-pitfalls-error-handling", "pitfalls"),
 ]
 
 CATEGORIES = [
@@ -265,22 +265,21 @@ def main() -> int:
             present_categories.append((cat, present))
 
     category_counts = {cat: len(present) for cat, present in present_categories}
-    deck_cards = []
-    for skill in DECK_SKILLS:
+    mind_nodes = []
+    for i, (skill, short) in enumerate(MIND_NODES):
         if skill not in parsed:
             continue
         cat = CATEGORY_FOR.get(skill, "Other")
         emoji = nested(parsed[skill], "metadata.openclaw.emoji", DEFAULT_EMOJI)
         count = category_counts.get(cat, 0)
-        label = f"{count} skill" + ("" if count == 1 else "s")
-        deck_cards.append(
-            f'<button class="deck-card" type="button" data-filter="{html.escape(cat)}" aria-pressed="false" title="Filter {html.escape(cat)} skills">'
-            f'<span class="deck-emoji">{html.escape(emoji)}</span>'
-            f'<span class="deck-name">{html.escape(skill)}</span>'
-            f'<span class="deck-cat">{html.escape(cat)}</span>'
-            f'<span class="deck-count">{label}</span></button>'
+        label = f"{html.escape(cat)} &middot; {count} skill" + ("" if count == 1 else "s")
+        mind_nodes.append(
+            f'<button class="mind-node n{i + 1}" type="button" data-filter="{html.escape(cat)}" aria-pressed="false" title="Filter {html.escape(cat)} skills" style="--i:{i}">'
+            f'<span class="mind-emoji">{html.escape(emoji)}</span>'
+            f'<span class="mind-name"><span class="full">{html.escape(skill)}</span><span class="short">{html.escape(short)}</span></span>'
+            f'<span class="mind-cat">{label}</span></button>'
         )
-    deck_html = "".join(deck_cards)
+    mind_html = "".join(mind_nodes)
 
     sections = []
     for idx, (cat, present) in enumerate(present_categories, start=1):
@@ -414,36 +413,41 @@ def main() -> int:
   .hero-hint {{ margin: .85rem 0 0; color: var(--muted-2); font-size: .76rem; }}
   .hero-hint code {{ padding: .1em .35em; border-radius: 5px; background: var(--primary-dim); color: var(--primary); font-size: .9em; }}
 
-  /* Skill deck */
-  .skill-deck {{ position: relative; display: flex; flex-direction: column; gap: .9rem; justify-self: end; width: 100%; max-width: 520px; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }}
-  .deck-gateway {{ position: relative; display: flex; align-items: center; gap: .8rem; overflow: hidden; padding: .85rem 1rem; border: 1px solid rgba(0, 229, 168, .35); border-radius: 14px; background: linear-gradient(135deg, rgba(0, 229, 168, .11), rgba(56, 189, 248, .06)); box-shadow: 0 18px 44px rgba(0, 0, 0, .35), 0 0 0 1px rgba(0, 229, 168, .04); }}
-  .deck-gateway::after {{ content: ""; position: absolute; right: 0; bottom: 0; left: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0, 229, 168, .6), transparent); }}
-  .deck-gateway .deck-emoji {{ width: 38px; height: 38px; font-size: 18px; }}
-  .deck-gateway-copy {{ display: flex; flex-direction: column; gap: .12rem; min-width: 0; }}
-  .deck-gateway-copy code {{ color: var(--primary); font-family: var(--mono); font-size: .82rem; font-weight: 600; }}
-  .deck-gateway-copy small {{ color: var(--muted); font-size: .64rem; }}
-  .deck-pulse {{ position: absolute; top: 1.05rem; right: 1.05rem; width: 7px; height: 7px; border-radius: 50%; background: var(--primary); animation: gateway-pulse 2.4s ease-out infinite; }}
-  .deck-carousel {{ overflow: hidden; border-radius: 14px; }}
-  .deck-track {{ display: flex; gap: .6rem; overflow-x: auto; padding: .1rem .1rem .35rem; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }}
-  .deck-track::-webkit-scrollbar {{ display: none; }}
-  .deck-card {{ position: relative; display: flex; flex: 0 0 calc(50% - .3rem); flex-direction: column; align-items: flex-start; gap: .18rem; min-height: 128px; padding: .85rem .9rem; border: 1px solid var(--border); border-radius: 12px; background: linear-gradient(180deg, rgba(17, 24, 39, .9), rgba(13, 18, 32, .96)); color: var(--text); text-align: left; scroll-snap-align: start; transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease; }}
-  .deck-card:hover, .deck-card:focus-visible {{ z-index: 1; border-color: rgba(0, 229, 168, .45); background: linear-gradient(180deg, rgba(17, 24, 39, .96), rgba(13, 18, 32, .98)); box-shadow: 0 16px 38px rgba(0, 0, 0, .42), 0 0 24px rgba(0, 229, 168, .08); transform: translateY(-3px); }}
-  .deck-card.active {{ border-color: rgba(0, 229, 168, .6); background: linear-gradient(180deg, rgba(0, 229, 168, .1), rgba(13, 18, 32, .96)); }}
-  .deck-emoji {{ display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin-bottom: .15rem; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-3); font-size: 15px; }}
-  .deck-name {{ color: var(--primary); font-family: var(--mono); font-size: .66rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }}
-  .deck-cat {{ color: var(--muted); font-size: .6rem; line-height: 1.3; }}
-  .deck-count {{ margin-top: auto; padding-top: .25rem; color: var(--muted-2); font-family: var(--mono); font-size: .52rem; letter-spacing: .08em; text-transform: uppercase; }}
-  .deck-card::after {{ content: "→"; position: absolute; right: .7rem; bottom: .65rem; color: var(--muted-2); font-family: var(--mono); font-size: .65rem; transition: color .2s ease, transform .2s ease; }}
-  .deck-card:hover::after, .deck-card:focus-visible::after {{ color: var(--primary); transform: translateX(2px); }}
-  .deck-footer {{ display: flex; align-items: center; justify-content: space-between; gap: .75rem; }}
-  .deck-hint {{ margin: 0; color: var(--muted-2); font-family: var(--mono); font-size: .56rem; letter-spacing: .08em; text-align: left; text-transform: uppercase; }}
-  .deck-controls {{ display: flex; align-items: center; gap: .45rem; }}
-  .deck-nav {{ display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text-2); font-family: var(--mono); font-size: 1rem; line-height: 1; transition: border-color .2s ease, color .2s ease, opacity .2s ease; }}
-  .deck-nav:hover:not(:disabled) {{ border-color: var(--primary); color: var(--primary); }}
-  .deck-nav:disabled {{ opacity: .35; cursor: default; }}
-  .deck-dots {{ display: flex; align-items: center; gap: .3rem; }}
-  .deck-dot {{ width: 6px; height: 6px; padding: 0; border: 0; border-radius: 50%; background: var(--border-2); transition: background .2s ease, transform .2s ease; }}
-  .deck-dot.active {{ background: var(--primary); transform: scale(1.25); }}
+  /* Mind map */
+  .mind-map {{ position: relative; justify-self: end; width: 100%; max-width: 520px; aspect-ratio: 1 / 1; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }}
+  .mind-map::before {{ content: ""; position: absolute; inset: 10%; border-radius: 50%; background: radial-gradient(circle, rgba(56, 189, 248, .1), transparent 62%); filter: blur(18px); }}
+  .mind-lines {{ position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }}
+  .mind-lines path {{ fill: none; stroke: url(#mind-grad); stroke-width: .45; stroke-linecap: round; opacity: .52; stroke-dasharray: 100; stroke-dashoffset: 0; animation: mind-draw .9s cubic-bezier(.2, .7, .2, 1) backwards; }}
+  .mind-lines path:nth-of-type(1) {{ animation-delay: .15s; }}
+  .mind-lines path:nth-of-type(2) {{ animation-delay: .27s; }}
+  .mind-lines path:nth-of-type(3) {{ animation-delay: .39s; }}
+  .mind-lines path:nth-of-type(4) {{ animation-delay: .51s; }}
+  .mind-lines path:nth-of-type(5) {{ animation-delay: .63s; }}
+  .mind-lines path:nth-of-type(6) {{ animation-delay: .75s; }}
+  .mind-pulses {{ opacity: 0; transition: opacity .5s ease; }}
+  .pulses-ready .mind-pulses {{ opacity: 1; }}
+  .mind-pulse {{ fill: #6bffd6; filter: drop-shadow(0 0 2px rgba(107, 255, 214, .9)); }}
+  .mind-agent {{ position: absolute; top: 50%; left: 50%; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: .08rem; text-align: center; transform: translate(-50%, -50%); }}
+  .mind-agent .robot {{ width: 74px; height: 74px; filter: drop-shadow(0 0 12px rgba(0, 229, 168, .35)); }}
+  .mind-agent .eye {{ transform-box: fill-box; transform-origin: center; animation: robot-blink 4.6s ease-in-out infinite; }}
+  .mind-agent .antenna-dot {{ transform-box: fill-box; transform-origin: center; animation: antenna-pulse 2.4s ease-out infinite; }}
+  .agent-ring {{ position: absolute; top: 37px; left: 50%; width: 92px; height: 92px; border: 1px solid rgba(0, 229, 168, .3); border-radius: 50%; transform: translate(-50%, -50%); animation: agent-ping 3.4s ease-out infinite; }}
+  .agent-label {{ margin-top: .1rem; color: var(--primary); font-family: var(--mono); font-size: .55rem; letter-spacing: .18em; text-transform: uppercase; }}
+  .agent-skill {{ color: var(--muted-2); font-family: var(--mono); font-size: .6rem; }}
+  .mind-node {{ position: absolute; z-index: 2; display: grid; grid-template-columns: 26px minmax(0, 1fr); grid-template-rows: auto auto; gap: .12rem .45rem; align-items: center; min-width: 118px; max-width: 150px; padding: .52rem .6rem; border: 1px solid var(--border); border-radius: 11px; background: linear-gradient(180deg, rgba(17, 24, 39, .94), rgba(13, 18, 32, .97)); color: var(--text); text-align: left; transform: translate(-50%, -50%); animation: mind-node .5s cubic-bezier(.2, .7, .2, 1) backwards; animation-delay: calc(var(--i) * .11s + .55s); transition: border-color .2s ease, box-shadow .2s ease, background .2s ease, transform .2s ease; }}
+  .mind-node:hover, .mind-node:focus-visible {{ z-index: 3; border-color: rgba(0, 229, 168, .5); background: linear-gradient(180deg, rgba(17, 24, 39, .98), rgba(13, 18, 32, 1)); box-shadow: 0 14px 34px rgba(0, 0, 0, .4), 0 0 22px rgba(0, 229, 168, .1); transform: translate(-50%, -50%) scale(1.045); }}
+  .mind-node.active {{ border-color: rgba(0, 229, 168, .65); box-shadow: 0 0 0 1px rgba(0, 229, 168, .08), 0 0 22px rgba(0, 229, 168, .12); }}
+  .mind-node.hit {{ border-color: rgba(0, 229, 168, .75); box-shadow: 0 0 0 4px rgba(0, 229, 168, .08), 0 0 26px rgba(0, 229, 168, .4); }}
+  .mind-node.n1 {{ left: 50%; top: 7%; }}
+  .mind-node.n2 {{ left: 87%; top: 27%; }}
+  .mind-node.n3 {{ left: 87%; top: 73%; }}
+  .mind-node.n4 {{ left: 50%; top: 93%; }}
+  .mind-node.n5 {{ left: 13%; top: 73%; }}
+  .mind-node.n6 {{ left: 13%; top: 27%; }}
+  .mind-emoji {{ grid-row: 1 / span 2; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-3); font-size: 13px; }}
+  .mind-name {{ color: var(--primary); font-family: var(--mono); font-size: .6rem; font-weight: 600; line-height: 1.25; overflow-wrap: anywhere; }}
+  .mind-name .short {{ display: none; }}
+  .mind-cat {{ color: var(--muted-2); font-size: .52rem; line-height: 1.2; }}
 
   /* Guide / index */
   .guide {{ padding: clamp(2.75rem, 5vw, 4.5rem) clamp(1.25rem, 4vw, 2rem) 4.5rem; }}
@@ -531,14 +535,18 @@ def main() -> int:
   @keyframes fade-in-up {{ from {{ opacity: 0; transform: translateY(24px); }} to {{ opacity: 1; transform: translateY(0); }} }}
   @keyframes fade-in-right {{ from {{ opacity: 0; transform: translateX(34px); }} to {{ opacity: 1; transform: translateX(0); }} }}
   @keyframes aurora-drift {{ from {{ transform: translate3d(-3%, -2%, 0) scale(1); }} to {{ transform: translate3d(4%, 3%, 0) scale(1.08); }} }}
-  @keyframes gateway-pulse {{ 0%, 100% {{ box-shadow: 0 0 0 0 rgba(0, 229, 168, .55); }} 50% {{ box-shadow: 0 0 0 7px rgba(0, 229, 168, 0); }} }}
+  @keyframes mind-draw {{ from {{ stroke-dashoffset: 100; }} }}
+  @keyframes mind-node {{ from {{ opacity: 0; transform: translate(-50%, -50%) scale(.82); }} }}
+  @keyframes robot-blink {{ 0%, 92%, 100% {{ transform: scaleY(1); }} 95% {{ transform: scaleY(.1); }} }}
+  @keyframes antenna-pulse {{ 0%, 100% {{ opacity: 1; transform: scale(1); }} 50% {{ opacity: .45; transform: scale(.7); }} }}
+  @keyframes agent-ping {{ 0% {{ opacity: .55; transform: translate(-50%, -50%) scale(.75); }} 100% {{ opacity: 0; transform: translate(-50%, -50%) scale(1.5); }} }}
   @media (prefers-reduced-motion: reduce) {{
     *, *::before, *::after {{ animation: none !important; transition: none !important; }}
   }}
 
   @media (max-width: 980px) {{
     .hero-inner {{ grid-template-columns: 1fr; }}
-    .skill-deck {{ justify-self: center; max-width: 460px; margin-top: .5rem; }}
+    .mind-map {{ justify-self: center; max-width: 470px; margin-top: .5rem; }}
     .filter-card {{ position: static; grid-template-columns: 1fr 1fr; }}
     .filter-note {{ grid-column: 1 / -1; }}
     .nav-links {{ display: none; }}
@@ -548,7 +556,17 @@ def main() -> int:
     .nav-cta {{ display: none; }}
     .nav-logo {{ font-size: .85rem; }}
     .filter-card {{ grid-template-columns: 1fr; }}
-    .deck-card {{ flex-basis: 84%; }}
+    .mind-map {{ max-width: 380px; }}
+    .mind-agent .robot {{ width: 58px; height: 58px; }}
+    .agent-ring {{ top: 29px; width: 74px; height: 74px; }}
+    .mind-node {{ min-width: 98px; max-width: 106px; padding: .45rem .5rem; grid-template-columns: 20px minmax(0, 1fr); gap: .1rem .3rem; }}
+    .mind-node.n2, .mind-node.n3 {{ left: 86%; }}
+    .mind-node.n5, .mind-node.n6 {{ left: 14%; }}
+    .mind-emoji {{ width: 20px; height: 20px; font-size: 11px; }}
+    .mind-name {{ font-size: .5rem; }}
+    .mind-name .full {{ display: none; }}
+    .mind-name .short {{ display: inline; }}
+    .mind-cat {{ display: none; }}
     .entry-row {{ grid-template-columns: 24px 32px minmax(0, 1fr) 18px; gap: .55rem; padding: .9rem .3rem; }}
     .entry-body {{ padding-left: .55rem; }}
     .hero-facts li {{ padding-right: .8rem; margin-right: .8rem; }}
@@ -597,26 +615,54 @@ def main() -> int:
         </ul>
         <p class="hero-hint">Start with <code>golang-how-to</code> &mdash; the gateway that routes every task to the right skills.</p>
       </div>
-      <div class="skill-deck" aria-label="Skill groups">
-        <div class="deck-gateway">
-          <span class="deck-emoji">🧭</span>
-          <span class="deck-gateway-copy">
-            <code>golang-how-to</code>
-            <small>gateway &middot; routes tasks to the right skills</small>
-          </span>
-          <span class="deck-pulse" aria-hidden="true"></span>
+      <div class="mind-map" aria-label="Agent skill map">
+        <svg class="mind-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="mind-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#00e5a8"/>
+              <stop offset=".5" stop-color="#38bdf8"/>
+              <stop offset="1" stop-color="#a78bfa"/>
+            </linearGradient>
+          </defs>
+          <path id="mind-p1" pathLength="100" d="M50 50 C 50 34 50 22 50 10"/>
+          <path id="mind-p2" pathLength="100" d="M50 50 C 64 42 78 34 88 27"/>
+          <path id="mind-p3" pathLength="100" d="M50 50 C 64 58 78 66 88 73"/>
+          <path id="mind-p4" pathLength="100" d="M50 50 C 50 66 50 78 50 90"/>
+          <path id="mind-p5" pathLength="100" d="M50 50 C 36 58 22 66 12 73"/>
+          <path id="mind-p6" pathLength="100" d="M50 50 C 36 42 22 34 12 27"/>
+          <g class="mind-pulses">
+            <circle class="mind-pulse" r="1.4" data-path="mind-p1" data-target="n1" data-dur="3400" data-offset="0"/>
+            <circle class="mind-pulse" r="1.4" data-path="mind-p2" data-target="n2" data-dur="3800" data-offset="0.16"/>
+            <circle class="mind-pulse" r="1.4" data-path="mind-p3" data-target="n3" data-dur="4200" data-offset="0.32"/>
+            <circle class="mind-pulse" r="1.4" data-path="mind-p4" data-target="n4" data-dur="3600" data-offset="0.48"/>
+            <circle class="mind-pulse" r="1.4" data-path="mind-p5" data-target="n5" data-dur="4000" data-offset="0.64"/>
+            <circle class="mind-pulse" r="1.4" data-path="mind-p6" data-target="n6" data-dur="3200" data-offset="0.8"/>
+          </g>
+        </svg>
+        <div class="mind-agent">
+          <span class="agent-ring" aria-hidden="true"></span>
+          <svg class="robot" viewBox="0 0 64 64" aria-hidden="true">
+            <defs>
+              <linearGradient id="robot-grad" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#00e5a8"/>
+                <stop offset=".5" stop-color="#38bdf8"/>
+                <stop offset="1" stop-color="#a78bfa"/>
+              </linearGradient>
+            </defs>
+            <circle class="antenna-dot" cx="32" cy="5" r="2.6" fill="url(#robot-grad)"/>
+            <path d="M32 8v7" stroke="url(#robot-grad)" stroke-width="2" stroke-linecap="round"/>
+            <rect x="10" y="15" width="44" height="36" rx="12" fill="rgba(13, 18, 32, .92)" stroke="url(#robot-grad)" stroke-width="2.2"/>
+            <rect x="4" y="25" width="5" height="14" rx="2.5" fill="rgba(13, 18, 32, .92)" stroke="url(#robot-grad)" stroke-width="1.6"/>
+            <rect x="55" y="25" width="5" height="14" rx="2.5" fill="rgba(13, 18, 32, .92)" stroke="url(#robot-grad)" stroke-width="1.6"/>
+            <circle class="eye" cx="24" cy="31" r="3.4" fill="#6bffd6"/>
+            <circle class="eye" cx="40" cy="31" r="3.4" fill="#6bffd6"/>
+            <path d="M24 41h16" stroke="url(#robot-grad)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M28 46h8" stroke="url(#robot-grad)" stroke-width="1.4" stroke-linecap="round" opacity=".6"/>
+          </svg>
+          <span class="agent-label">agent</span>
+          <span class="agent-skill">golang-how-to</span>
         </div>
-        <div class="deck-carousel">
-          <div class="deck-track" id="deck-track">{deck_html}</div>
-        </div>
-        <div class="deck-footer">
-          <p class="deck-hint">Click a card to filter the index</p>
-          <div class="deck-controls">
-            <button class="deck-nav prev" type="button" aria-label="Previous skills" disabled>‹</button>
-            <div class="deck-dots" id="deck-dots"></div>
-            <button class="deck-nav next" type="button" aria-label="Next skills">›</button>
-          </div>
-        </div>
+        {mind_html}
       </div>
     </div>
   </section>
@@ -814,10 +860,10 @@ def main() -> int:
     smoothScrollTo(y);
   }}
 
-  function syncDeck(filter) {{
-    document.querySelectorAll('.deck-card').forEach(card => {{
-      card.classList.toggle('active', card.dataset.filter === filter);
-      card.setAttribute('aria-pressed', String(card.classList.contains('active')));
+  function syncMap(filter) {{
+    document.querySelectorAll('.mind-node').forEach(node => {{
+      node.classList.toggle('active', node.dataset.filter === filter);
+      node.setAttribute('aria-pressed', String(node.classList.contains('active')));
     }});
   }}
 
@@ -825,64 +871,65 @@ def main() -> int:
     chips.forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
     activeFilter = chip.dataset.filter;
-    syncDeck(activeFilter);
+    syncMap(activeFilter);
     apply();
     revealResults();
   }}));
 
-  document.querySelectorAll('.deck-card').forEach(card => {{
-    card.addEventListener('click', () => {{
-      const chip = [...chips].find(c => c.dataset.filter === card.dataset.filter);
+  document.querySelectorAll('.mind-node').forEach(node => {{
+    node.addEventListener('click', () => {{
+      const chip = [...chips].find(c => c.dataset.filter === node.dataset.filter);
       if (chip) chip.click();
     }});
   }});
 
-  const deckTrack = document.getElementById('deck-track');
-  const deckDots = document.getElementById('deck-dots');
-  const deckPrev = document.querySelector('.deck-nav.prev');
-  const deckNext = document.querySelector('.deck-nav.next');
-
-  function deckMetrics() {{
-    const card = deckTrack ? deckTrack.querySelector('.deck-card') : null;
-    if (!deckTrack || !card) return {{ perView: 1, step: 1, pages: 1 }};
-    const gap = parseFloat(getComputedStyle(deckTrack).columnGap) || 0;
-    const size = card.getBoundingClientRect().width + gap;
-    const perView = Math.max(1, Math.round(deckTrack.clientWidth / size));
-    const count = deckTrack.querySelectorAll('.deck-card').length;
-    return {{ perView, step: perView * size, pages: Math.max(1, Math.ceil(count / perView)) }};
-  }}
-
-  function updateDeckUI() {{
-    if (!deckTrack) return;
-    const {{ step, pages }} = deckMetrics();
-    if (deckDots && deckDots.children.length !== pages) {{
-      deckDots.innerHTML = '';
-      for (let i = 0; i < pages; i++) {{
-        const dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = 'deck-dot';
-        dot.setAttribute('aria-label', 'Go to skill group ' + (i + 1));
-        dot.addEventListener('click', () => {{
-          deckTrack.scrollTo({{ left: i * step, behavior: 'smooth' }});
-        }});
-        deckDots.appendChild(dot);
+  (function mindPulses() {{
+    const circles = document.querySelectorAll('.mind-pulse');
+    if (!circles.length || reduceMotion) return;
+    const items = [];
+    circles.forEach(circle => {{
+      const path = document.getElementById(circle.dataset.path);
+      if (!path) return;
+      items.push({{
+        circle,
+        path,
+        target: circle.dataset.target ? document.querySelector('.mind-node.' + circle.dataset.target) : null,
+        length: path.getTotalLength(),
+        dur: Number(circle.dataset.dur) || 3600,
+        offset: Number(circle.dataset.offset) || 0,
+        prev: null
+      }});
+    }});
+    if (!items.length) return;
+    for (const item of items) {{
+      const t = item.offset % 1;
+      const point = item.path.getPointAtLength(t * item.length);
+      item.circle.setAttribute('cx', point.x);
+      item.circle.setAttribute('cy', point.y);
+      item.prev = t;
+    }}
+    setTimeout(() => {{
+      document.documentElement.classList.add('pulses-ready');
+      let start = null;
+      function tick(now) {{
+        if (start === null) start = now;
+        for (const item of items) {{
+          const t = (((now - start) / item.dur) + item.offset) % 1;
+          const point = item.path.getPointAtLength(t * item.length);
+          item.circle.setAttribute('cx', point.x);
+          item.circle.setAttribute('cy', point.y);
+          item.circle.style.opacity = (0.4 + 0.6 * Math.sin(t * Math.PI)).toFixed(2);
+          if (item.target && t < item.prev) {{
+            item.target.classList.add('hit');
+            setTimeout(() => item.target.classList.remove('hit'), 420);
+          }}
+          item.prev = t;
+        }}
+        requestAnimationFrame(tick);
       }}
-    }}
-    const active = Math.min(pages - 1, Math.round(deckTrack.scrollLeft / step));
-    if (deckDots) {{
-      [...deckDots.children].forEach((dot, i) => dot.classList.toggle('active', i === active));
-    }}
-    if (deckPrev) deckPrev.disabled = deckTrack.scrollLeft <= 2;
-    if (deckNext) deckNext.disabled = deckTrack.scrollLeft >= deckTrack.scrollWidth - deckTrack.clientWidth - 2;
-  }}
-
-  if (deckTrack) {{
-    if (deckPrev) deckPrev.addEventListener('click', () => deckTrack.scrollBy({{ left: -deckMetrics().step, behavior: 'smooth' }}));
-    if (deckNext) deckNext.addEventListener('click', () => deckTrack.scrollBy({{ left: deckMetrics().step, behavior: 'smooth' }}));
-    deckTrack.addEventListener('scroll', updateDeckUI, {{ passive: true }});
-    window.addEventListener('resize', updateDeckUI);
-    updateDeckUI();
-  }}
+      requestAnimationFrame(tick);
+    }}, 1800);
+  }})();
 
   search.addEventListener('input', apply);
 
