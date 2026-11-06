@@ -44,6 +44,12 @@
   code, pre, kbd { font-family: var(--mono); }
   :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
   .container { width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 2rem); }
+  #bg-canvas { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; opacity: .7; }
+  main, .site-footer { position: relative; z-index: 1; }
+  .aurora { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .aurora::before, .aurora::after { content: ""; position: absolute; width: min(62vw, 720px); aspect-ratio: 1; border-radius: 50%; filter: blur(85px); opacity: .16; animation: aurora-drift 26s ease-in-out infinite alternate; }
+  .aurora::before { top: -12%; left: -8%; background: radial-gradient(circle, #00e5a8, transparent 65%); }
+  .aurora::after { right: -8%; bottom: -18%; background: radial-gradient(circle, #a78bfa, transparent 65%); animation-delay: -11s; animation-duration: 32s; }
   .skip-link { position: fixed; top: .75rem; left: .75rem; z-index: 1000; padding: .6rem .9rem; border: 1px solid var(--primary); border-radius: var(--radius); background: var(--bg); color: var(--primary); font-family: var(--mono); font-size: .75rem; transform: translateY(-160%); transition: transform .2s ease; }
   .skip-link:focus { transform: translateY(0); }
   .eyebrow { margin: 0 0 .5rem; color: var(--primary); font-family: var(--mono); font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; }
@@ -102,17 +108,21 @@
   .route-map { position: relative; width: 100%; max-width: 480px; aspect-ratio: 1 / 1; justify-self: end; animation: fade-in-right .9s cubic-bezier(.2, .7, .2, 1) both .15s; }
   .route-map::before { content: ""; position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle, rgba(56, 189, 248, .1), transparent 62%); filter: blur(14px); }
   .route-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-  .route-lines path { fill: none; stroke: url(#route-grad); stroke-width: .5; stroke-dasharray: 2.4 2.4; stroke-linecap: round; opacity: .55; animation: route-dash 22s linear infinite; }
-  .route-node { position: absolute; transform: translate(-50%, -50%); padding: .42rem .72rem; border: 1px solid var(--border); border-radius: 999px; background: rgba(13, 18, 32, .94); color: var(--text-2); font-family: var(--mono); font-size: .62rem; white-space: nowrap; box-shadow: 0 10px 28px rgba(0, 0, 0, .4); animation: route-float 7s ease-in-out infinite; }
+  .route-lines path { fill: none; stroke: url(#route-grad); stroke-width: .42; stroke-dasharray: 1.6 2.4; stroke-linecap: round; opacity: .42; }
+  .route-node { position: absolute; transform: translate(-50%, -50%); padding: .42rem .72rem; border: 1px solid var(--border); border-radius: 999px; background: rgba(13, 18, 32, .94); color: var(--text-2); font-family: var(--mono); font-size: .62rem; white-space: nowrap; box-shadow: 0 10px 28px rgba(0, 0, 0, .4); }
   .route-node.n1 { left: 16%; top: 22%; }
-  .route-node.n2 { left: 84%; top: 20%; animation-delay: -1.2s; }
-  .route-node.n3 { left: 12%; top: 80%; animation-delay: -2.4s; }
-  .route-node.n4 { left: 88%; top: 78%; animation-delay: -3.6s; }
-  .route-node.n5 { left: 50%; top: 8%; animation-delay: -4.8s; }
-  .route-node.n6 { left: 50%; top: 92%; animation-delay: -6s; }
+  .route-node.n2 { left: 84%; top: 20%; }
+  .route-node.n3 { left: 12%; top: 80%; }
+  .route-node.n4 { left: 88%; top: 78%; }
+  .route-node.n5 { left: 50%; top: 8%; }
+  .route-node.n6 { left: 50%; top: 92%; }
   .route-center { left: 50%; top: 50%; z-index: 2; padding: .6rem 1rem; border-color: rgba(0, 229, 168, .55); color: var(--primary); font-size: .7rem; box-shadow: 0 0 0 7px rgba(0, 229, 168, .05), 0 0 34px rgba(0, 229, 168, .28); animation: none; }
   .route-center em { display: block; margin-top: .1rem; color: var(--muted-2); font-family: var(--mono); font-size: .48rem; font-style: normal; letter-spacing: .18em; text-align: center; text-transform: uppercase; }
   .route-center::before { content: ""; position: absolute; inset: -11px; border: 1px solid rgba(0, 229, 168, .28); border-radius: 999px; animation: route-pulse 3.2s ease-out infinite; }
+  .route-orbit { fill: none; stroke: rgba(56, 189, 248, .18); stroke-width: .3; stroke-dasharray: 1 2.8; transform-box: view-box; transform-origin: 50% 50%; animation: route-spin 70s linear infinite; }
+  .route-pulses { opacity: 0; transition: opacity .5s ease; }
+  .pulses-ready .route-pulses { opacity: 1; }
+  .route-pulse { fill: #6bffd6; filter: drop-shadow(0 0 2px rgba(107, 255, 214, .9)); }
 
   /* Guide / index */
   .guide { padding: clamp(2.75rem, 5vw, 4.5rem) clamp(1.25rem, 4vw, 2rem) 4.5rem; }
@@ -199,8 +209,8 @@
 
   @keyframes fade-in-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fade-in-right { from { opacity: 0; transform: translateX(34px); } to { opacity: 1; transform: translateX(0); } }
-  @keyframes route-float { 0%, 100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, calc(-50% - 7px)); } }
-  @keyframes route-dash { to { stroke-dashoffset: -100; } }
+  @keyframes route-spin { to { transform: rotate(360deg); } }
+  @keyframes aurora-drift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(4%, 3%, 0) scale(1.08); } }
   @keyframes route-pulse { 0% { opacity: .8; transform: scale(.86); } 70%, 100% { opacity: 0; transform: scale(1.22); } }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -226,6 +236,8 @@
 </style>
 </head>
 <body>
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<div class="aurora" aria-hidden="true"></div>
 <a class="skip-link" href="#catalog">Skip to content</a>
 <header class="site-header" id="site-header">
   <nav class="container">
@@ -288,12 +300,21 @@
               <stop offset="1" stop-color="#a78bfa"/>
             </linearGradient>
           </defs>
-          <path d="M50 50 C 36 38 26 30 16 22"/>
-          <path d="M50 50 C 64 38 74 30 84 20"/>
-          <path d="M50 50 C 38 62 26 70 12 80"/>
-          <path d="M50 50 C 62 62 76 70 88 78"/>
-          <path d="M50 50 C 50 34 50 22 50 8"/>
-          <path d="M50 50 C 50 66 50 78 50 92"/>
+          <circle class="route-orbit" cx="50" cy="50" r="31"/>
+          <path id="route-p1" d="M50 50 C 36 38 26 30 16 22"/>
+          <path id="route-p2" d="M50 50 C 64 38 74 30 84 20"/>
+          <path id="route-p3" d="M50 50 C 38 62 26 70 12 80"/>
+          <path id="route-p4" d="M50 50 C 62 62 76 70 88 78"/>
+          <path id="route-p5" d="M50 50 C 50 34 50 22 50 8"/>
+          <path id="route-p6" d="M50 50 C 50 66 50 78 50 92"/>
+          <g class="route-pulses">
+            <circle class="route-pulse" r="1.3" data-path="route-p1" data-dur="3400" data-offset="0"/>
+            <circle class="route-pulse" r="1.3" data-path="route-p2" data-dur="3800" data-offset="0.16"/>
+            <circle class="route-pulse" r="1.3" data-path="route-p3" data-dur="4200" data-offset="0.32"/>
+            <circle class="route-pulse" r="1.3" data-path="route-p4" data-dur="3600" data-offset="0.48"/>
+            <circle class="route-pulse" r="1.3" data-path="route-p5" data-dur="4000" data-offset="0.64"/>
+            <circle class="route-pulse" r="1.3" data-path="route-p6" data-dur="3200" data-offset="0.8"/>
+          </g>
         </svg>
         <span class="route-node route-center">golang-how-to<em>gateway</em></span>
         <span class="route-node n1">concurrency</span>
@@ -8059,6 +8080,119 @@ type T struct {
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6"/></svg>
 </button>
 <script>
+  (function backgroundParticles() {
+    const canvas = document.getElementById('bg-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const COLORS = ['0,229,168', '56,189,248', '167,139,250'];
+    let width = 0;
+    let height = 0;
+    let particles = [];
+    let tick = 0;
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.max(32, Math.min(88, Math.round((width * height) / 24000)));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.16,
+        vy: (Math.random() - 0.5) * 0.16,
+        r: Math.random() * 1.2 + 0.35,
+        c: COLORS[Math.floor(Math.random() * COLORS.length)],
+        a: Math.random() * 0.34 + 0.12
+      }));
+    }
+
+    function frame() {
+      ctx.clearRect(0, 0, width, height);
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -24) p.x = width + 24;
+        if (p.x > width + 24) p.x = -24;
+        if (p.y < -24) p.y = height + 24;
+        if (p.y > height + 24) p.y = -24;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + p.c + ',' + p.a + ')';
+        ctx.fill();
+      }
+      tick++;
+      if (tick % 2 === 0) {
+        const reach = 135;
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const a = particles[i];
+            const b = particles[j];
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const d2 = dx * dx + dy * dy;
+            if (d2 > reach * reach) continue;
+            const alpha = (1 - Math.sqrt(d2) / reach) * 0.16;
+            ctx.strokeStyle = 'rgba(56,189,248,' + alpha + ')';
+            ctx.lineWidth = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    requestAnimationFrame(frame);
+  })();
+
+  (function routePulses() {
+    const circles = document.querySelectorAll('.route-pulse');
+    if (!circles.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const items = [];
+    circles.forEach(circle => {
+      const path = document.getElementById(circle.dataset.path);
+      if (!path) return;
+      items.push({
+        circle,
+        path,
+        length: path.getTotalLength(),
+        dur: Number(circle.dataset.dur) || 3600,
+        offset: Number(circle.dataset.offset) || 0
+      });
+    });
+    if (!items.length) return;
+    for (const item of items) {
+      const t = item.offset % 1;
+      const point = item.path.getPointAtLength(t * item.length);
+      item.circle.setAttribute('cx', point.x);
+      item.circle.setAttribute('cy', point.y);
+    }
+    document.documentElement.classList.add('pulses-ready');
+    let start = null;
+    function tick(now) {
+      if (start === null) start = now;
+      for (const item of items) {
+        const t = (((now - start) / item.dur) + item.offset) % 1;
+        const point = item.path.getPointAtLength(t * item.length);
+        item.circle.setAttribute('cx', point.x);
+        item.circle.setAttribute('cy', point.y);
+        item.circle.style.opacity = (0.4 + 0.6 * Math.sin(t * Math.PI)).toFixed(2);
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+
   const search = document.getElementById('search');
   const chips = document.querySelectorAll('.route-chip');
   const categories = document.querySelectorAll('.category');
